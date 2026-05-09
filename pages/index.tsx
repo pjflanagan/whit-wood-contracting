@@ -6,14 +6,15 @@ import { PortfolioGrid } from '../components/portfolio-grid';
 import { Testimonials } from '../components/testimonials';
 import { ContactForm } from '../components/contact-form';
 import { Section, FooterSection } from '../components/section';
-import { TITLE, SUBTITLE } from '../content/metadata';
-import { fetchServices, fetchPortfolio, fetchTestimonials, fetchAbout, fetchContact } from '../model/notion';
+import { fetchSiteConfig, fetchServices, fetchPortfolio, fetchTestimonials, fetchAbout, fetchContact } from '../model/notion';
+import type { SiteConfig } from '../model/site-config';
 import type { Service } from '../model/service';
 import type { PortfolioItem } from '../model/portfolio-item';
 import type { Testimonial } from '../model/testimonial';
 import Style from './index.module.scss';
 
 type HomePageProps = {
+  siteConfig: SiteConfig;
   services: Service[];
   portfolio: PortfolioItem[];
   testimonials: Testimonial[];
@@ -22,7 +23,8 @@ type HomePageProps = {
 };
 
 export const getStaticProps: GetStaticProps<HomePageProps> = async () => {
-  const [services, portfolio, testimonials, aboutHtml, contactHtml] = await Promise.all([
+  const [siteConfig, services, portfolio, testimonials, aboutHtml, contactHtml] = await Promise.all([
+    fetchSiteConfig(),
     fetchServices(),
     fetchPortfolio(),
     fetchTestimonials(),
@@ -30,15 +32,21 @@ export const getStaticProps: GetStaticProps<HomePageProps> = async () => {
     fetchContact(),
   ]);
   return {
-    props: { services, portfolio, testimonials, aboutHtml, contactHtml },
+    props: { siteConfig, services, portfolio, testimonials, aboutHtml, contactHtml },
     revalidate: 3600,
   };
 };
 
-export default function Home({ services, portfolio, testimonials, aboutHtml, contactHtml }: HomePageProps) {
+export default function Home({ siteConfig, services, portfolio, testimonials, aboutHtml, contactHtml }: HomePageProps) {
   return (
     <>
-      <Hero businessName={TITLE} tagline={SUBTITLE} ctaLabel="Get a Free Quote" ctaTarget="contact" />
+      <Hero
+        businessName={siteConfig.businessName}
+        tagline={siteConfig.tagline}
+        ctaLabel={siteConfig.ctaLabel}
+        ctaTarget={siteConfig.ctaTarget}
+        heroImageUrl={siteConfig.heroImageUrl}
+      />
       <main className={Style['page']}>
         <Section id="services">
           <h2>Our Services</h2>

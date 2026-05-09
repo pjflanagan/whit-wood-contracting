@@ -3,8 +3,10 @@ import type { BlockObjectResponse, RichTextItemResponse } from '@notionhq/client
 import type { Service } from './service';
 import type { PortfolioItem } from './portfolio-item';
 import type { Testimonial } from './testimonial';
+import type { SiteConfig } from './site-config';
 
 const NOTION_TOKEN = process.env.NOTION_TOKEN;
+const NOTION_SITE_CONFIG_DB = process.env.NOTION_SITE_CONFIG_DB;
 const NOTION_SERVICES_DB = process.env.NOTION_SERVICES_DB;
 const NOTION_PORTFOLIO_DB = process.env.NOTION_PORTFOLIO_DB;
 const NOTION_TESTIMONIALS_DB = process.env.NOTION_TESTIMONIALS_DB;
@@ -88,6 +90,16 @@ export function blocksToHtml(blocks: BlockObjectResponse[]): string {
 }
 
 // --- EXAMPLE DATA (shown when NOTION_TOKEN is not set) ---
+
+const EXAMPLE_SITE_CONFIG: SiteConfig = {
+  businessName: 'Ridge & Rail Renovations',
+  tagline: 'Licensed General Contractor · Portland, OR',
+  heroImageUrl: '',
+  ctaLabel: 'Get a Free Quote',
+  ctaTarget: 'contact',
+  seoDescription: 'Ridge & Rail Renovations — licensed general contractor serving the Portland metro area. Kitchen remodels, bathroom renovations, flooring, decks, basement finishing, and painting.',
+  seoKeywords: 'contractor, renovation, remodel, kitchen remodel, bathroom renovation, flooring installation, deck builder, basement finishing, interior painting, Portland contractor',
+};
 
 const EXAMPLE_SERVICES: Service[] = [
   {
@@ -303,4 +315,30 @@ export async function fetchAbout(): Promise<string> {
 
 export async function fetchContact(): Promise<string> {
   return (await fetchPageHtml(NOTION_CONTACT_PAGE)) ?? EXAMPLE_CONTACT;
+}
+
+export async function fetchSiteConfig(): Promise<SiteConfig> {
+  const client = createClient();
+  if (!client || !NOTION_SITE_CONFIG_DB) return EXAMPLE_SITE_CONFIG;
+  try {
+    const response = await client.databases.query({
+      database_id: NOTION_SITE_CONFIG_DB,
+      page_size: 1,
+    });
+    const page = response.results.filter(isFullPage)[0];
+    if (!page) return EXAMPLE_SITE_CONFIG;
+    const p = page.properties;
+    return {
+      businessName: richTextToPlain((p['Business Name'] as any).title),
+      tagline: richTextToPlain((p.Tagline as any).rich_text),
+      heroImageUrl: (p['Hero Image URL'] as any).url ?? '',
+      ctaLabel: richTextToPlain((p['CTA Label'] as any).rich_text),
+      ctaTarget: richTextToPlain((p['CTA Target'] as any).rich_text),
+      seoDescription: richTextToPlain((p['SEO Description'] as any).rich_text),
+      seoKeywords: richTextToPlain((p['SEO Keywords'] as any).rich_text),
+    };
+  } catch (e) {
+    console.error('Notion site config fetch error:', e);
+    return EXAMPLE_SITE_CONFIG;
+  }
 }
