@@ -1,50 +1,66 @@
+# Ridge & Rail Renovations — Website
 
-# Julian Wittich Music
+Contractor website for Ridge & Rail Renovations (Portland, OR). Built with Next.js 14, TypeScript, and SCSS. Deployed on Netlify. Content is managed through Notion — no code changes needed for day-to-day updates.
 
-A musician website featuring events, bio, a contact section, and a strumable bass.
+## Content Management
 
-## Edit Content
+All copy, services, portfolio items, and testimonials are managed in Notion. See **[notion-setup.md](./notion-setup.md)** for how to structure the databases and connect them to the site.
 
-### Calendar
+When Notion is not configured (no `NOTION_TOKEN`), the site displays built-in example data so it is always previewable.
 
-The calendar can be updated on [Google Calendar](https://calendar.google.com/calendar/u/0?cid=OGUzNTBmMTdhNzRhN2RiZDg0ZWI1OWFmNWI5YzJlODVlNjRkY2Q4ZTZjMmQ2ZWNmMWRkZGZmNjliMTk0YTZhZEBncm91cC5jYWxlbmRhci5nb29nbGUuY29t). When adding an event, be sure to format the information correctly:
+The site rebuilds automatically every hour to pick up Notion changes. To force an immediate refresh, trigger a new deploy in Netlify.
 
-- **Timezone**: If your event takes place outside of the America/New York timezone then be sure to set this.
-- **Title**: Enter the name of the event venue.
-- **Time**: Only the start time is displayed. The event will be displayed until the end time is reached.
-- **Location**: Optionally enter the URL of a details or ticketing page.
-- **Description**: Optionally add a brief description (ex: "NYC Jazz Festival" or "South Stage" or "Featuring Guest Performer"). Formatting will be ignored.
-- **Calendar**: Make sure it is saved to the `Julian Wittich Music` calendar.
-
-![Example Google Calendar Event](https://raw.githubusercontent.com/pjflanagan/julianwittichmusic/main/readme/ExampleEvent.png)
-
-### Copy 
-
-The site's copy is managed through a few blog posts on [Blogger](https://www.blogger.com/blog/posts/2761611771015880407?hl=en&tab=jj). When editing a section be sure to use the HTML view to prevent unwanted formatting from being added. Available tags:
-- `p`: be sure to wrap all paragraphs in `<p>` tags
-- `a`: link (be sure to include `target="_blank"` on link tags so they open in new pages)
-- `b`: bold
-- `i`: italics
-
-<!-- ### Images TODO: -->
-
-<!-- ## Monitor
-
-Site analytics are tracked on [Google Analytics](https://analytics.google.com). -->
-
-## Development
-
-### Local Dev
-
-1. Clone the repo
-2. Install with `npm i`
-3. Run the local Netlify server (you may have to run `nvm use` first)
-4. To see content, you will have to recreate a `.env` file using the keys found on Netlify
+## Local Development
 
 ```
-$ netlify dev
+git clone https://github.com/pjflanagan/whit-wood-contracting
+cd whit-wood-contracting
+npm install
 ```
 
-### Deploy
+Create a `.env.local` file with Notion credentials (see notion-setup.md). Without it, the site runs fine on example data.
 
-Merge to the `main` branch to trigger a Netlify deploy.
+```
+npm run dev
+```
+
+The site runs at `http://localhost:3000`.
+
+## Deploy
+
+Pushing to `main` triggers a Netlify deploy automatically.
+
+## Tech Stack
+
+| Layer | Tool |
+|---|---|
+| Framework | Next.js 14 (Pages Router) |
+| Language | TypeScript |
+| Styles | SCSS Modules |
+| CMS | Notion (via `@notionhq/client`) |
+| Hosting | Netlify |
+| Forms | Netlify Forms |
+| Analytics | Google Analytics 4 |
+
+## Project Structure
+
+```
+content/
+  metadata.ts       ← Site title, subtitle, SEO tags
+components/         ← UI components (Hero, ServicesList, PortfolioGrid, …)
+model/
+  notion.ts         ← Fetches from Notion; falls back to example data
+  *.ts              ← TypeScript types (Service, PortfolioItem, Testimonial, …)
+pages/
+  index.tsx         ← Main page — assembles sections at build time
+  api/              ← API routes for data fetching
+public/
+  img/logo/         ← Replace logo.png with the client's logo
+  __forms.html      ← Netlify Forms detection file (do not delete)
+styles/
+  theme.module.scss ← Colors, breakpoints, spacing
+```
+
+## System
+
+This repo follows the pattern described in [SYSTEM.md](./SYSTEM.md) — a reusable template for spinning up small client sites on the same Next.js + Notion stack.
