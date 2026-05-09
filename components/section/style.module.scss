@@ -1,0 +1,29 @@
+@import '../../styles/theme.module.scss';
+
+$section-padding: 48px 24px;
+
+.section {
+  padding: $section-padding;
+  max-width: $section-max-width;
+  margin: 0 auto;
+
+  &#footer {
+    padding-top: 24px;
+    padding-bottom: 24px;
+    text-align: center;
+    font-size: 0.82em;
+    color: $text-muted;
+    border-top: 1px solid $border;
+    max-width: 100%;
+
+    p {
+      margin: 4px 0;
+    }
+  }
+}
+
+@media (min-width: $md-breakpoint) {
+  .section {
+    padding: 64px 48px;
+  }
+}

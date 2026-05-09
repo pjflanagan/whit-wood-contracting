@@ -1,0 +1,66 @@
+@import '../../styles/theme.module.scss';
+
+.hero {
+  position: relative;
+  min-height: 100vh;
+  background-color: $background-dark;
+  background-image: var(--hero-bg-image);
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.content {
+  text-align: center;
+  color: #fff;
+  max-width: 640px;
+
+  h1 {
+    color: #fff;
+    font-size: 2.8em;
+    margin: 16px 0 8px;
+  }
+}
+
+.logo {
+  width: 72px;
+  height: auto;
+  opacity: 0.9;
+}
+
+.tagline {
+  font-size: 1.1em;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0 0 32px;
+  font-weight: 300;
+}
+
+.cta {
+  display: inline-block;
+  padding: 14px 36px;
+  background: $accent;
+  color: #fff;
+  border: none;
+  font-family: inherit;
+  font-size: 1em;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover {
+    background: $accent-dark;
+  }
+}

@@ -1,0 +1,110 @@
+@import '../../styles/theme.module.scss';
+
+.form {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 680px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+
+  @media (min-width: $md-breakpoint) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.9em;
+
+  span {
+    font-weight: 500;
+    color: $text;
+  }
+
+  input,
+  select,
+  textarea {
+    font-family: inherit;
+    font-size: 1em;
+    font-weight: 300;
+    color: $text;
+    background: #fff;
+    border: 1px solid $border;
+    padding: 10px 12px;
+    outline: none;
+    transition: border-color 0.15s;
+
+    &:focus {
+      border-color: $accent;
+    }
+  }
+
+  textarea {
+    resize: vertical;
+  }
+
+  select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 32px;
+  }
+}
+
+.full {
+  grid-column: 1 / -1;
+}
+
+.required {
+  color: $accent;
+}
+
+.submit {
+  align-self: flex-start;
+  padding: 12px 32px;
+  background: $accent;
+  color: #fff;
+  border: none;
+  font-family: inherit;
+  font-size: 1em;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover:not(:disabled) {
+    background: $accent-dark;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+}
+
+.success {
+  padding: 24px;
+  background: $surface;
+  border: 1px solid $border;
+  border-left: 4px solid $accent;
+
+  p {
+    margin: 0;
+    color: $text;
+  }
+}
+
+.error-msg {
+  color: #c0392b;
+  font-size: 0.9em;
+  margin: 0;
+}

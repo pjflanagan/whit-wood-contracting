@@ -1,0 +1,29 @@
+@import '../../styles/theme.module.scss';
+
+.scroll-down-button {
+  $padding: 8px;
+
+  width: 40px;
+  height: 40px;
+  padding: $padding;
+  border-radius: 2px;
+  line-height: 0;
+  background: $background-dark-transparent;
+  cursor: pointer;
+  transition: background 0.2s, padding-top 0.2s;
+  color: #fff;
+
+  &.light {
+    background: $string-color-less-transparent;
+    color: #000;
+  }
+
+  &:hover {
+    background: $background-dark-less-transparent;
+    padding-top: calc($padding + 2px);
+
+    &.light {
+      background: $string-color-transparent;
+    }
+  }
+}

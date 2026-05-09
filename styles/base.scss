@@ -1,0 +1,68 @@
+@import './theme.module.scss';
+
+::selection {
+  background: $selection;
+}
+::-moz-selection {
+  background: $selection;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: $background;
+  color: $text;
+  font-family: "Josefin Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
+}
+
+h1, h2, h3, h4, h5 {
+  font-weight: 700;
+  color: $text;
+  margin: 0 0 8px;
+}
+
+h2 {
+  font-size: 1.8em;
+  border-bottom: 2px solid $accent;
+  padding-bottom: 8px;
+  display: inline-block;
+  margin-bottom: 24px;
+}
+
+h3 {
+  font-size: 1.15em;
+}
+
+p {
+  line-height: 1.7;
+  font-size: 0.96em;
+  margin: 0 0 12px;
+}
+
+a {
+  color: $accent;
+  text-decoration: none;
+  transition: color 0.2s;
+
+  &:hover {
+    color: $accent-dark;
+    text-decoration: underline;
+  }
+}
+
+strong {
+  font-weight: 600;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid $border;
+  margin: 40px 0;
+}

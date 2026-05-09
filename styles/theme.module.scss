@@ -1,0 +1,20 @@
+$background: #f7f4f0;
+$background-dark: #1e1e1e;
+$surface: #ffffff;
+$text: #2c2c2c;
+$text-muted: #777777;
+$accent: #b87333;
+$accent-dark: #8a561d;
+$border: #e0d8cf;
+$selection: rgba(184, 115, 51, 0.25);
+
+$md-breakpoint: 720px;
+$lg-breakpoint: 1100px;
+$section-max-width: 1100px;
+
+:export {
+  background: $background;
+  backgroundDark: $background-dark;
+  accent: $accent;
+  mdBreakpoint: $md-breakpoint;
+}

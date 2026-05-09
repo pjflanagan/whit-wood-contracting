@@ -1,0 +1,59 @@
+@import '../../styles/theme.module.scss';
+
+div.sidebar {
+  position: relative;
+  top: calc(100vh - $guitar-neck-width);
+  width: 100vw;
+  min-height: 100vh;
+
+  div.sidebar-strings {
+    div.string {
+      width: 100%;
+      margin-top: $guitar-string-gap;
+      height: $guitar-string-width;
+      background: $string-color-transparent;
+
+      &:first-child {
+        margin-top: 0;
+      }
+    }
+  }
+
+  div.sidebar-content {
+    margin: 0 auto;
+    background: $background;
+  }
+}
+
+@media only screen and (min-width: $md-breakpoint) {
+  div.slideshow {
+    width: $sidebar-left;
+
+    div.header {
+      display: none;
+    }
+  }
+
+  $sidebar-width: calc(100vw - $sidebar-left);
+
+  div.sidebar {
+    position: fixed;
+    top: 0;
+    left: $sidebar-left;
+    width: $sidebar-width;
+    height: 100%;
+    padding: 0 $sidebar-padding 0 $sidebar-guitar-offset;
+    box-shadow: -140px 0px 80px 9px #0008;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    background: $background;
+
+    div.sidebar-strings {
+      display: none;
+    }
+
+    div.sidebar-content {
+      max-width: 540px;
+    }
+  }
+}
