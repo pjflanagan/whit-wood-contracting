@@ -1,22 +1,17 @@
+## Setup (before launch)
 
-- [x] alt titles for all the logos and images
-- [x] add title tags to the links in the body
-- [x] H1 tag on mobile for the title of the page
-- [x] add location to title "in NYC" for SEO reasons
+- [ ] Replace /public/img/logo/logo.png with the client's real logo
+- [ ] Add a hero background image at /public/img/hero.jpg (used by the Hero component)
+- [ ] Replace favicon.png and favicon.ico with client-branded versions
+- [ ] Set the real Google Analytics ID in pages/_app.tsx (replace G-XXXXXXXXXX)
+- [ ] Connect Notion databases — follow notion-setup.md, add env vars in Netlify
+- [ ] Populate Notion with real services, portfolio projects, testimonials, about text, and contact info
+- [ ] Add social links to SocialIconRow (Facebook, Houzz, Google My Business, etc.) once the client has them
 
-- [x] fix timezones to be whatever timezone the event is in
+## Nice to have
 
-- [ ] install an ally
-- [ ] back to top arrow
-- [ ] make the scroll thing update the url and just prevent the default, just a <a href="#">
-- [ ] add keywords to the link to my own page <a>Website by Peter Flanagan</a>
-- [ ] make a Google Keywords account
-
-https://pagespeed.web.dev/analysis/https-julianwittich-com/31fdjkqq9z?form_factor=desktop
-
-- [ ] upright bass auto plucks, add a fingerPoint where the curve ends
-
-- [ ] cdn for the photos
-
-v2
-- [ ] when touchscreen have the bass just kinda play itself
+- [ ] Add a sticky nav header with smooth-scroll links to each section
+- [ ] Portfolio lightbox — click a project card to see full-size photo and details
+- [ ] Implement site.config.ts per SYSTEM.md to centralize all per-client config in one file
+- [ ] Set up Google Analytics goals for contact form submissions
+- [ ] Add a "Request a Quote" CTA button in the nav that scrolls to the contact form
