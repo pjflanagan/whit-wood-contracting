@@ -1,7 +1,6 @@
 export * from './hero';
 export * from './modal';
 export * from './icon';
-export * from './events-list';
 export * from './social-icon-row';
 export * from './services-list';
 export * from './portfolio-grid';
