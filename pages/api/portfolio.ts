@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { fetchPortfolio } from '../../model/notion';
+import { fetchPortfolio } from '../../services/api';
 import type { PortfolioItem } from '../../model/portfolio-item';
 
 export default async function handler(_req: NextApiRequest, res: NextApiResponse<PortfolioItem[]>) {

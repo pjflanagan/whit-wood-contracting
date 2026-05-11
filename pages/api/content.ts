@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { fetchAbout, fetchContact } from '../../model/notion';
+import { fetchAbout, fetchContact } from '../../services/api';
 
 const SECTIONS = ['about', 'contact'] as const;
 export type SectionName = typeof SECTIONS[number];

@@ -6,7 +6,7 @@ import { PortfolioGrid } from '../components/portfolio-grid';
 import { Testimonials } from '../components/testimonials';
 import { ContactForm } from '../components/contact-form';
 import { Section, FooterSection } from '../components/section';
-import { fetchSiteConfig, fetchServices, fetchPortfolio, fetchTestimonials, fetchAbout, fetchContact } from '../model/notion';
+import { fetchSiteConfig, fetchServices, fetchPortfolio, fetchTestimonials, fetchAbout, fetchContact } from '../services/api';
 import type { SiteConfig } from '../model/site-config';
 import type { Service } from '../model/service';
 import type { PortfolioItem } from '../model/portfolio-item';
