@@ -1,4 +1,3 @@
-import React from 'react';
 import { Icon } from '../';
 import Style from './ScrollDownButton.module.scss';
 import animateScrollTo from 'animated-scroll-to';

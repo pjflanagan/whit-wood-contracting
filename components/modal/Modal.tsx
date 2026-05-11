@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Image from 'next/image';
 import Style from './Modal.module.scss';
 
 type ModalProps = {
@@ -18,7 +19,13 @@ export function Modal({ title, description, images = [], onClose }: ModalProps) 
         <button className={Style.modalClose} onClick={onClose}>✕</button>
         {images.length > 0 && (
           <div className={Style.slideshow}>
-            <img src={images[slide]} alt={title} className={Style.slide} />
+            <Image
+              src={images[slide]!}
+              alt={title}
+              className={Style.slide}
+              fill
+              unoptimized
+            />
             {hasMultiple && (
               <>
                 <button

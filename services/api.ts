@@ -246,8 +246,8 @@ async function fetchImageDb(dbId: string): Promise<Record<string, string>> {
   const kv: Record<string, string> = {};
   for (const page of response.results.filter(isFullPage)) {
     const p = page.properties;
-    const id = richTextToPlain((p['ID'] as any)?.title ?? []);
-    const files: any[] = (p['Image'] as any)?.files ?? [];
+    const id = richTextToPlain((p.ID as any)?.title ?? []);
+    const files: any[] = (p.Image as any)?.files ?? [];
     const url = files[0]
       ? files[0].type === 'external'
         ? files[0].external.url
@@ -265,8 +265,8 @@ async function fetchKeyValueDb(dbId: string): Promise<Record<string, string>> {
   const kv: Record<string, string> = {};
   for (const page of response.results.filter(isFullPage)) {
     const p = page.properties;
-    const id = richTextToPlain((p['ID'] as any)?.title ?? []);
-    const value = richTextToPlain((p['Value'] as any)?.rich_text ?? []);
+    const id = richTextToPlain((p.ID as any)?.title ?? []);
+    const value = richTextToPlain((p.Value as any)?.rich_text ?? []);
     if (id) kv[id] = value;
   }
   return kv;
@@ -277,11 +277,11 @@ export async function fetchSocialLinks(): Promise<SocialLinks> {
   try {
     const kv = await fetchKeyValueDb(NOTION_SOCIAL_LINKS_DB);
     return {
-      facebookUrl: kv['facebookUrl'] || null,
-      instagramUrl: kv['instagramUrl'] || null,
-      houzzUrl: kv['houzzUrl'] || null,
-      yelpUrl: kv['yelpUrl'] || null,
-      googleUrl: kv['googleUrl'] || null,
+      facebookUrl: kv.facebookUrl || null,
+      instagramUrl: kv.instagramUrl || null,
+      houzzUrl: kv.houzzUrl || null,
+      yelpUrl: kv.yelpUrl || null,
+      googleUrl: kv.googleUrl || null,
     };
   } catch (e) {
     console.error('Notion social links fetch error:', e);
@@ -294,7 +294,7 @@ export async function fetchSiteImages(): Promise<SiteImages> {
   try {
     const kv = await fetchImageDb(NOTION_SITE_IMAGES_DB);
     return {
-      logoUrl: kv['logo'] || null,
+      logoUrl: kv.logo || null,
       heroImageUrl: kv['hero-image'] || null,
       shareCardUrl: kv['share-card'] || null,
     };
@@ -313,13 +313,13 @@ export async function fetchSections(): Promise<PageSection[]> {
     });
     return response.results.filter(isFullPage).flatMap((page) => {
       const p = page.properties;
-      const id = safeTitle(p['ID']);
-      const title = safeRichText(p['Title']);
+      const id = safeTitle(p.ID);
+      const title = safeRichText(p.Title);
       if (!id || !title) return [];
       return [{
         id,
         title,
-        description: safeRichText(p['Description']),
+        description: safeRichText(p.Description),
       }];
     });
   } catch (e) {
@@ -333,13 +333,13 @@ export async function fetchSiteConfig(): Promise<SiteConfig> {
   try {
     const kv = await fetchKeyValueDb(NOTION_SITE_CONFIG_DB);
     return {
-      businessName: kv['businessName'] || '',
-      tagline: kv['tagline'] || '',
-      ctaLabel: kv['buttonLabel'] || '',
-      seoDescription: kv['seoDescription'] || '',
-      seoKeywords: kv['seoKeywords'] || '',
-      phone: kv['phone'] || '',
-      email: kv['email'] || '',
+      businessName: kv.businessName || '',
+      tagline: kv.tagline || '',
+      ctaLabel: kv.buttonLabel || '',
+      seoDescription: kv.seoDescription || '',
+      seoKeywords: kv.seoKeywords || '',
+      phone: kv.phone || '',
+      email: kv.email || '',
     };
   } catch (e) {
     console.error('Notion site config fetch error:', e);

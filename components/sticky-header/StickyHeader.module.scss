@@ -8,6 +8,7 @@
   z-index: 100;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 12px;
   padding: 0 24px;
   height: 56px;
@@ -26,6 +27,13 @@
   }
 }
 
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
 .logo {
   width: 32px;
   height: 32px;
@@ -42,4 +50,54 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.nav {
+  display: none;
+
+  @media (min-width: $md-breakpoint) {
+    display: block;
+  }
+}
+
+.navList {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 20px;
+}
+
+.navLink {
+  background: none;
+  border: none;
+  color: #fffa;
+  font-family: inherit;
+  font-size: 0.85em;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s;
+  white-space: nowrap;
+
+  &:hover {
+    color: #fff;
+  }
+}
+
+.navCta {
+  background: $accent;
+  border: none;
+  color: #fff;
+  font-family: inherit;
+  font-size: 0.85em;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 6px 14px;
+  transition: background 0.2s;
+  white-space: nowrap;
+
+  &:hover {
+    background: $accent-dark;
+  }
 }

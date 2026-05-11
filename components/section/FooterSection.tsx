@@ -1,4 +1,3 @@
-import React from "react";
 import Link from "next/link";
 import { Section } from "./Section";
 import { SocialIconRow } from "../social-icon-row";

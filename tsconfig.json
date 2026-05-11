@@ -6,7 +6,7 @@
     "allowJs": true,
     "baseUrl": "./src",
     "esModuleInterop": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "removeComments": true,
     "alwaysStrict": true,
     "allowUnreachableCode": false,
@@ -27,7 +27,7 @@
     "incremental": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve"
+    "jsx": "react-jsx"
   },
   "include": [
     "./**/*.ts"

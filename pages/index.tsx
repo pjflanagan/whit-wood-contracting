@@ -114,7 +114,7 @@ export default function Home({ siteConfig, siteImages, socialLinks, services, po
   const contentProps = { siteConfig, services, portfolio, testimonials, aboutHtml };
   return (
     <>
-      <StickyHeader businessName={siteConfig.businessName} triggerRef={heroRef} />
+      <StickyHeader businessName={siteConfig.businessName} triggerRef={heroRef} sections={sections} />
       <Hero
         ref={heroRef}
         businessName={siteConfig.businessName}

@@ -10,7 +10,7 @@
 
 ## Nice to have
 
-- [ ] Add a sticky nav header with smooth-scroll links to each section
-- [ ] Portfolio lightbox — click a project card to see full-size photo and details
+- [x] Add a sticky nav header with smooth-scroll links to each section
+- [x] Portfolio lightbox — click a project card to see full-size photo and details
 - [ ] Set up Google Analytics goals for contact form submissions
-- [ ] Add a "Request a Quote" CTA button in the nav that scrolls to the contact form
+- [x] Add a "Request a Quote" CTA button in the nav that scrolls to the contact form
