@@ -7,7 +7,7 @@ import type { PortfolioItem } from '../model/portfolio-item';
 import { EXAMPLE_TESTIMONIALS } from '../model/testimonial';
 import type { Testimonial } from '../model/testimonial';
 import { EXAMPLE_SITE_CONFIG } from '../model/site-config';
-import type { SiteConfig } from '../model/site-config';
+import type { SiteConfig, SocialLinks } from '../model/site-config';
 import notionConfig from '../notion.config';
 
 const NOTION_TOKEN = process.env.NOTION_TOKEN;
@@ -122,14 +122,13 @@ export async function fetchServices(): Promise<Service[]> {
   try {
     const response = await client.databases.query({
       database_id: NOTION_SERVICES_DB,
-      sorts: [{ property: 'Order', direction: 'ascending' }],
     });
     return response.results.filter(isFullPage).map((page) => {
       const p = page.properties;
       return {
-        title: richTextToPlain((p.Name as any).title),
+        title: richTextToPlain((p.Title as any).title),
         description: richTextToPlain((p.Description as any).rich_text),
-        tier: ((p.Tier as any).select?.name?.toLowerCase() ?? undefined) as Service['tier'],
+        tier: ((p.Tier as any).select?.name?.toLowerCase() ?? null) as Service['tier'],
       };
     });
   } catch (e) {
@@ -205,6 +204,13 @@ export async function fetchSiteConfig(): Promise<SiteConfig> {
     const page = response.results.filter(isFullPage)[0];
     if (!page) return EXAMPLE_SITE_CONFIG;
     const p = page.properties;
+    const socialLinks: SocialLinks = {
+      facebookUrl: (p['Facebook URL'] as any)?.url ?? undefined,
+      instagramUrl: (p['Instagram URL'] as any)?.url ?? undefined,
+      houzzUrl: (p['Houzz URL'] as any)?.url ?? undefined,
+      yelpUrl: (p['Yelp URL'] as any)?.url ?? undefined,
+      googleUrl: (p['Google URL'] as any)?.url ?? undefined,
+    };
     return {
       businessName: richTextToPlain((p['Business Name'] as any).title),
       tagline: richTextToPlain((p.Tagline as any).rich_text),
@@ -213,6 +219,7 @@ export async function fetchSiteConfig(): Promise<SiteConfig> {
       ctaTarget: richTextToPlain((p['CTA Target'] as any).rich_text),
       seoDescription: richTextToPlain((p['SEO Description'] as any).rich_text),
       seoKeywords: richTextToPlain((p['SEO Keywords'] as any).rich_text),
+      socialLinks,
     };
   } catch (e) {
     console.error('Notion site config fetch error:', e);

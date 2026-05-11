@@ -1,14 +1,14 @@
 export type Service = {
   title: string;
   description: string;
-  tier?: 'priority' | 'secondary' | 'tertiary';
+  tier?: 'primary' | 'secondary' | 'tertiary';
 };
 
 export const EXAMPLE_SERVICES: Service[] = [
   {
     title: 'Kitchen Remodels',
     description: 'Full kitchen renovations from design through finish — custom cabinetry, countertops, tile, and appliance installation.',
-    tier: 'priority',
+    tier: 'primary',
   },
   {
     title: 'Bathroom Renovations',

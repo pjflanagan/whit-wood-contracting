@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import type { GetStaticProps } from 'next';
 import { Hero } from '../components/hero';
+import { StickyHeader } from '../components/sticky-header';
 import { ServicesList } from '../components/services-list';
 import { PortfolioGrid } from '../components/portfolio-grid';
 import { Testimonials } from '../components/testimonials';
@@ -38,9 +39,12 @@ export const getStaticProps: GetStaticProps<HomePageProps> = async () => {
 };
 
 export default function Home({ siteConfig, services, portfolio, testimonials, aboutHtml, contactHtml }: HomePageProps) {
+  const heroRef = useRef<HTMLElement>(null);
   return (
     <>
+      <StickyHeader businessName={siteConfig.businessName} triggerRef={heroRef} />
       <Hero
+        ref={heroRef}
         businessName={siteConfig.businessName}
         tagline={siteConfig.tagline}
         ctaLabel={siteConfig.ctaLabel}
@@ -71,7 +75,7 @@ export default function Home({ siteConfig, services, portfolio, testimonials, ab
               <h2>About Us</h2>
               <div dangerouslySetInnerHTML={{ __html: aboutHtml }} />
             </Section>
-            <FooterSection />
+            <FooterSection socialLinks={siteConfig.socialLinks} />
           </div>
           <aside className={Style.sidebar}>
             <div className={Style.sidebarInner}>

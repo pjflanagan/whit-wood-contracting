@@ -10,9 +10,19 @@ type HeroProps = {
   heroImageUrl?: string;
 };
 
-export function Hero({ businessName, tagline, ctaLabel, ctaTarget, heroImageUrl }: HeroProps) {
+export const Hero = React.forwardRef<HTMLElement, HeroProps>(function Hero(
+  { businessName, tagline, ctaLabel, ctaTarget, heroImageUrl },
+  ref
+) {
   function handleCtaClick() {
-    document.getElementById(ctaTarget)?.scrollIntoView({ behavior: 'smooth' });
+    const target = document.getElementById(ctaTarget);
+    if (target && target.offsetParent !== null) {
+      target.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      // On desktop the mobile contact section is hidden; scroll past the hero so
+      // the sticky sidebar form comes into full view
+      document.querySelector('main')?.scrollIntoView({ behavior: 'smooth' });
+    }
   }
 
   const heroStyle = heroImageUrl
@@ -20,7 +30,7 @@ export function Hero({ businessName, tagline, ctaLabel, ctaTarget, heroImageUrl 
     : undefined;
 
   return (
-    <section className={Style.hero} style={heroStyle}>
+    <section ref={ref} className={Style.hero} style={heroStyle}>
       <div className={Style.overlay}>
         <div className={Style.content}>
           <Image src="/img/logo/logo.png" alt={`${businessName} logo`} className={Style.logo} width={120} height={120} />
@@ -33,4 +43,4 @@ export function Hero({ businessName, tagline, ctaLabel, ctaTarget, heroImageUrl 
       </div>
     </section>
   );
-}
+});

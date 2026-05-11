@@ -25,8 +25,13 @@ Properties:
 | CTA Target | Text | Section ID the button scrolls to, e.g. `contact` |
 | SEO Description | Text | Meta description for search engines |
 | SEO Keywords | Text | Comma-separated keywords for search engines |
+| Facebook URL | URL | Full URL to your Facebook page (optional) |
+| Instagram URL | URL | Full URL to your Instagram profile (optional) |
+| Houzz URL | URL | Full URL to your Houzz profile (optional) |
+| Yelp URL | URL | Full URL to your Yelp listing (optional) |
+| Google URL | URL | Full URL to your Google Business profile (optional) |
 
-Add one row and fill in all fields.
+Add one row and fill in all fields. Social URL fields are optional — leave blank to hide that icon.
 
 ### Services Database
 

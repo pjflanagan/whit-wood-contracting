@@ -6,12 +6,11 @@
 - [ ] Connect Notion databases — follow notion-setup.md, add env vars in Netlify
 - [ ] Populate the Site Config database in Notion (business name, tagline, hero image URL, CTA, SEO)
 - [ ] Populate Notion with real services, portfolio projects, testimonials, about text, and contact info
-- [ ] Add social links to SocialIconRow (Facebook, Houzz, Google My Business, etc.) once the client has them
+- [x] Add social links to SocialIconRow (Facebook, Instagram, Houzz, Yelp, Google)
 
 ## Nice to have
 
 - [ ] Add a sticky nav header with smooth-scroll links to each section
 - [ ] Portfolio lightbox — click a project card to see full-size photo and details
-- [ ] Implement site.config.ts per SYSTEM.md to centralize all per-client config in one file
 - [ ] Set up Google Analytics goals for contact form submissions
 - [ ] Add a "Request a Quote" CTA button in the nav that scrolls to the contact form

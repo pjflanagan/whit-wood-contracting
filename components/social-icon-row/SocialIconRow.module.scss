@@ -1,22 +1,23 @@
-
 .socialIconRow {
   display: flex;
   justify-content: center;
+  gap: 8px;
   width: 100%;
+}
 
-  a {
-    margin: 6px;
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  color: inherit;
+  opacity: 0.65;
+  font-size: 1.25rem;
+  transition: opacity 0.2s;
 
-    img {
-      margin: 4px 6px;
-      opacity: 0.8;
-      transition: opacity 0.2s;
-    }
-
-    &:hover {
-      img {
-        opacity: 1;
-      }
-    }
+  &:hover {
+    opacity: 1;
   }
 }
