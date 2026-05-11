@@ -20,7 +20,7 @@
   flex-direction: column;
   border: 1px solid $border;
   overflow: hidden;
-  background: none;
+  background: $surface;
   padding: 0;
   text-align: left;
   font-family: inherit;
@@ -83,7 +83,7 @@
 
 .card p {
   margin: 0;
-  font-size: 0.88em;
+  font-size: 0.96em;
   color: $text-muted;
   line-height: 1.6;
 }

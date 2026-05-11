@@ -171,15 +171,13 @@ export async function fetchServices(): Promise<Service[]> {
       const p = page.properties;
       const title = safeTitle(p.Title);
       if (!title) return [];
-      const tierName = safeSelect(p.Tier).toLowerCase();
-      const tier = (['primary', 'secondary', 'tertiary'].includes(tierName) ? tierName : null) as Service['tier'];
       return [{
+        order: safeNumber(p.Order, Infinity),
         title,
         description: safeRichText(p.Description),
-        tier,
         images: safeFiles(p.Images),
       }];
-    });
+    }).sort((a, b) => a.order - b.order).map(({ order: _order, ...s }) => s);
   } catch (e) {
     console.error('Notion services fetch error:', e);
     return DEFAULT_SERVICES;
@@ -198,13 +196,14 @@ export async function fetchPortfolio(): Promise<PortfolioItem[]> {
       const title = safeTitle(p.Name);
       if (!title) return [];
       return [{
+        order: safeNumber(p.Order, Infinity),
         id: page.id,
         title,
         type: safeSelect(p.Type),
         description: safeRichText(p.Description),
         photos: safeFiles(p.Photos),
       }];
-    });
+    }).sort((a, b) => a.order - b.order).map(({ order: _order, ...item }) => item);
   } catch (e) {
     console.error('Notion portfolio fetch error:', e);
     return DEFAULT_PORTFOLIO;
@@ -224,11 +223,12 @@ export async function fetchTestimonials(): Promise<Testimonial[]> {
       const quote = safeRichText(p.Quote);
       if (!clientName || !quote) return [];
       return [{
+        order: safeNumber(p.Order, Infinity),
         clientName,
         quote,
         rating: safeNumber(p.Stars, 5),
       }];
-    });
+    }).sort((a, b) => a.order - b.order).map(({ order: _order, ...t }) => t);
   } catch (e) {
     console.error('Notion testimonials fetch error:', e);
     return DEFAULT_TESTIMONIALS;
@@ -317,11 +317,12 @@ export async function fetchSections(): Promise<PageSection[]> {
       const title = safeRichText(p.Title);
       if (!id || !title) return [];
       return [{
+        order: safeNumber(p.Order, Infinity),
         id,
         title,
         description: safeRichText(p.Description),
       }];
-    });
+    }).sort((a, b) => a.order - b.order).map(({ order: _order, ...s }) => s);
   } catch (e) {
     console.error('Notion sections fetch error:', e);
     return DEFAULT_SECTIONS;
