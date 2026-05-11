@@ -3,7 +3,7 @@ const notionConfig = {
   socialLinksDb: '',
   siteImagesDb: '35d910934e0880749f32d3e31d4444d1',
   servicesDb: '35d910934e08803e9300e581f138d803',
-  portfolioDb: '',
+  portfolioDb: '35d910934e0880428755d9cdc385a966',
   testimonialsDb: '35d910934e08809ea6addaa1e5ba5ac2',
   sectionsDb: '35d910934e088034b2d4c26db027c7b0',
   aboutPage: '35d910934e088097b451d15e2473f131',

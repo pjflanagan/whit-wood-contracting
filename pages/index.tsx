@@ -59,6 +59,7 @@ function renderSectionContent(id: string, title: string, description: string, pr
   const desc = description ? <p>{description}</p> : null;
   switch (id) {
     case 'services':
+      if (!services.length) return null;
       return (
         <Section key={id} id={id}>
           <h2>{title}</h2>
@@ -67,6 +68,7 @@ function renderSectionContent(id: string, title: string, description: string, pr
         </Section>
       );
     case 'contact':
+      if (!siteConfig.phone && !siteConfig.email) return null;
       return (
         <Section key={id} id={id} className={Style.contactMobile}>
           <h2>{title}</h2>
@@ -76,6 +78,7 @@ function renderSectionContent(id: string, title: string, description: string, pr
         </Section>
       );
     case 'portfolio':
+      if (!portfolio.length) return null;
       return (
         <Section key={id} id={id}>
           <h2>{title}</h2>
@@ -84,6 +87,7 @@ function renderSectionContent(id: string, title: string, description: string, pr
         </Section>
       );
     case 'testimonials':
+      if (!testimonials.length) return null;
       return (
         <Section key={id} id={id}>
           <h2>{title}</h2>
@@ -92,6 +96,7 @@ function renderSectionContent(id: string, title: string, description: string, pr
         </Section>
       );
     case 'about':
+      if (!aboutHtml) return null;
       return (
         <Section key={id} id={id}>
           <h2>{title}</h2>

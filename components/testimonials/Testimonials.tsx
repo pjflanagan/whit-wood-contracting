@@ -35,7 +35,7 @@ function Stars({ rating, className }: StarsProps) {
 
 type TestimonialsProps = { testimonials: Testimonial[] };
 
-const GRID_LIMIT = 4;
+const GRID_LIMIT = 2;
 
 export function Testimonials({ testimonials }: TestimonialsProps) {
   const [showAll, setShowAll] = useState(false);

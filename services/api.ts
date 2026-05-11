@@ -35,6 +35,50 @@ function richTextToPlain(richText: RichTextItemResponse[]): string {
   return richText.map((t) => t.plain_text).join('');
 }
 
+function safeTitle(prop: unknown): string | null {
+  try {
+    const text = richTextToPlain((prop as any)?.title ?? []);
+    return text || null;
+  } catch {
+    return null;
+  }
+}
+
+function safeRichText(prop: unknown): string {
+  try {
+    return richTextToPlain((prop as any)?.rich_text ?? []);
+  } catch {
+    return '';
+  }
+}
+
+function safeSelect(prop: unknown): string {
+  try {
+    return (prop as any)?.select?.name ?? '';
+  } catch {
+    return '';
+  }
+}
+
+function safeNumber(prop: unknown, fallback: number): number {
+  try {
+    const n = (prop as any)?.number;
+    return typeof n === 'number' ? n : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function safeFiles(prop: unknown): string[] {
+  try {
+    return ((prop as any)?.files ?? []).map((f: any) =>
+      f.type === 'external' ? f.external.url : f.file.url,
+    ).filter(Boolean);
+  } catch {
+    return [];
+  }
+}
+
 function richTextToHtml(richText: RichTextItemResponse[]): string {
   return richText
     .map((t) => {
@@ -123,17 +167,18 @@ export async function fetchServices(): Promise<Service[]> {
     const response = await client.databases.query({
       database_id: NOTION_SERVICES_DB,
     });
-    return response.results.filter(isFullPage).map((page) => {
+    return response.results.filter(isFullPage).flatMap((page) => {
       const p = page.properties;
-      const images: string[] = ((p.Images as any)?.files ?? []).map((f: any) =>
-        f.type === 'external' ? f.external.url : f.file.url,
-      );
-      return {
-        title: richTextToPlain((p.Title as any).title),
-        description: richTextToPlain((p.Description as any).rich_text),
-        tier: ((p.Tier as any).select?.name?.toLowerCase() ?? null) as Service['tier'],
-        images,
-      };
+      const title = safeTitle(p.Title);
+      if (!title) return [];
+      const tierName = safeSelect(p.Tier).toLowerCase();
+      const tier = (['primary', 'secondary', 'tertiary'].includes(tierName) ? tierName : null) as Service['tier'];
+      return [{
+        title,
+        description: safeRichText(p.Description),
+        tier,
+        images: safeFiles(p.Images),
+      }];
     });
   } catch (e) {
     console.error('Notion services fetch error:', e);
@@ -149,15 +194,17 @@ export async function fetchPortfolio(): Promise<PortfolioItem[]> {
       database_id: NOTION_PORTFOLIO_DB,
       sorts: [{ property: 'Name', direction: 'ascending' }],
     });
-    return response.results.filter(isFullPage).map((page) => {
+    return response.results.filter(isFullPage).flatMap((page) => {
       const p = page.properties;
-      return {
+      const title = safeTitle(p.Name);
+      if (!title) return [];
+      return [{
         id: page.id,
-        title: richTextToPlain((p.Name as any).title),
-        category: (p.Category as any).select?.name ?? '',
-        description: richTextToPlain((p.Description as any).rich_text),
-        imageUrl: (p['Image URL'] as any).url ?? '',
-      };
+        title,
+        type: safeSelect(p.Type),
+        description: safeRichText(p.Description),
+        photos: safeFiles(p.Photos),
+      }];
     });
   } catch (e) {
     console.error('Notion portfolio fetch error:', e);
@@ -172,13 +219,16 @@ export async function fetchTestimonials(): Promise<Testimonial[]> {
     const response = await client.databases.query({
       database_id: NOTION_TESTIMONIALS_DB,
     });
-    return response.results.filter(isFullPage).map((page) => {
+    return response.results.filter(isFullPage).flatMap((page) => {
       const p = page.properties;
-      return {
-        clientName: richTextToPlain((p['Client Name'] as any).title),
-        quote: richTextToPlain((p.Quote as any).rich_text),
-        rating: (p.Stars as any).number ?? 5,
-      };
+      const clientName = safeTitle(p['Client Name']);
+      const quote = safeRichText(p.Quote);
+      if (!clientName || !quote) return [];
+      return [{
+        clientName,
+        quote,
+        rating: safeNumber(p.Stars, 5),
+      }];
     });
   } catch (e) {
     console.error('Notion testimonials fetch error:', e);
@@ -262,13 +312,16 @@ export async function fetchSections(): Promise<PageSection[]> {
     const response = await client.databases.query({
       database_id: NOTION_SECTIONS_DB,
     });
-    return response.results.filter(isFullPage).map((page) => {
+    return response.results.filter(isFullPage).flatMap((page) => {
       const p = page.properties;
-      return {
-        id: richTextToPlain((p['ID'] as any).title),
-        title: richTextToPlain((p['Title'] as any).rich_text),
-        description: richTextToPlain((p['Description'] as any)?.rich_text ?? []),
-      };
+      const id = safeTitle(p['ID']);
+      const title = safeRichText(p['Title']);
+      if (!id || !title) return [];
+      return [{
+        id,
+        title,
+        description: safeRichText(p['Description']),
+      }];
     });
   } catch (e) {
     console.error('Notion sections fetch error:', e);

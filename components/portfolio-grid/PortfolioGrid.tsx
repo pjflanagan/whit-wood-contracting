@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import { useState } from 'react';
 import type { PortfolioItem } from '../../model/portfolio-item';
 import { Modal } from '../modal';
@@ -17,16 +16,16 @@ export function PortfolioGrid({ items }: PortfolioGridProps) {
         {items.map((item) => (
           <button key={item.id} className={Style.card} onClick={() => setActive(item)}>
             <div className={Style.imageWrapper}>
-              {item.imageUrl ? (
-                <Image src={item.imageUrl} alt={item.title} fill style={{ objectFit: 'cover' }} />
+              {item.photos[0] ? (
+                <img src={item.photos[0]} alt={item.title} style={{ objectFit: 'cover', width: '100%', height: '100%' }} />
               ) : (
                 <div className={Style.placeholder}>
-                  <span>{item.category}</span>
+                  <span>{item.type}</span>
                 </div>
               )}
             </div>
             <div className={Style.info}>
-              <span className={Style.category}>{item.category}</span>
+              <span className={Style.category}>{item.type}</span>
               <h3>{item.title}</h3>
               <p>{item.description}</p>
             </div>
@@ -38,7 +37,7 @@ export function PortfolioGrid({ items }: PortfolioGridProps) {
         <Modal
           title={active.title}
           description={active.description}
-          images={active.imageUrl ? [active.imageUrl] : []}
+          images={active.photos}
           onClose={() => setActive(null)}
         />
       )}

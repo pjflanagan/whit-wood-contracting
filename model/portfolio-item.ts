@@ -1,9 +1,9 @@
 export type PortfolioItem = {
   id: string;
   title: string;
-  category: string;
+  type: string;
   description: string;
-  imageUrl: string;
+  photos: string[];
 };
 
 export const DEFAULT_PORTFOLIO: PortfolioItem[] = [];
