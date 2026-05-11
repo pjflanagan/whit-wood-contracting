@@ -1,5 +1,7 @@
 # Ridge & Rail Renovations — Website
 
+Original: https://www.yourgreenguys.org/
+
 Contractor website for Ridge & Rail Renovations (Portland, OR). Built with Next.js 14, TypeScript, and SCSS. Deployed on Netlify. Content is managed through Notion — no code changes needed for day-to-day updates.
 
 ## Content Management

@@ -52,6 +52,11 @@ export default function Home({ siteConfig, services, portfolio, testimonials, ab
           <h2>Our Services</h2>
           <ServicesList services={services} />
         </Section>
+        <Section id="contact">
+          <h2>Get in Touch</h2>
+          <div dangerouslySetInnerHTML={{ __html: contactHtml }} />
+          <ContactForm />
+        </Section>
         <Section id="portfolio">
           <h2>Our Work</h2>
           <PortfolioGrid items={portfolio} />
@@ -63,11 +68,6 @@ export default function Home({ siteConfig, services, portfolio, testimonials, ab
         <Section id="about">
           <h2>About Us</h2>
           <div dangerouslySetInnerHTML={{ __html: aboutHtml }} />
-        </Section>
-        <Section id="contact">
-          <h2>Get in Touch</h2>
-          <div dangerouslySetInnerHTML={{ __html: contactHtml }} />
-          <ContactForm />
         </Section>
         <FooterSection />
       </main>

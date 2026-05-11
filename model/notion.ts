@@ -4,14 +4,15 @@ import type { Service } from './service';
 import type { PortfolioItem } from './portfolio-item';
 import type { Testimonial } from './testimonial';
 import type { SiteConfig } from './site-config';
+import notionConfig from '../notion.config';
 
 const NOTION_TOKEN = process.env.NOTION_TOKEN;
-const NOTION_SITE_CONFIG_DB = process.env.NOTION_SITE_CONFIG_DB;
-const NOTION_SERVICES_DB = process.env.NOTION_SERVICES_DB;
-const NOTION_PORTFOLIO_DB = process.env.NOTION_PORTFOLIO_DB;
-const NOTION_TESTIMONIALS_DB = process.env.NOTION_TESTIMONIALS_DB;
-const NOTION_ABOUT_PAGE = process.env.NOTION_ABOUT_PAGE;
-const NOTION_CONTACT_PAGE = process.env.NOTION_CONTACT_PAGE;
+const NOTION_SITE_CONFIG_DB = notionConfig.siteConfigDb;
+const NOTION_SERVICES_DB = notionConfig.servicesDb;
+const NOTION_PORTFOLIO_DB = notionConfig.portfolioDb;
+const NOTION_TESTIMONIALS_DB = notionConfig.testimonialsDb;
+const NOTION_ABOUT_PAGE = notionConfig.aboutPage;
+const NOTION_CONTACT_PAGE = notionConfig.contactPage;
 
 function createClient(): Client | null {
   if (!NOTION_TOKEN) return null;
