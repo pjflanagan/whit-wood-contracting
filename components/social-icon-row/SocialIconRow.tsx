@@ -1,6 +1,6 @@
 import { FaFacebook, FaInstagram, FaGoogle, FaYelp } from 'react-icons/fa';
 import { SiHouzz } from 'react-icons/si';
-import type { SocialLinks } from '../../model/site-config';
+import type { SocialLinks } from '../../model/social-links';
 import Style from './SocialIconRow.module.scss';
 
 type SocialIconRowProps = {

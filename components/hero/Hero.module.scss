@@ -15,7 +15,7 @@
 .overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.55);
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0.75) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -31,6 +31,7 @@
     color: #fff;
     font-size: 2.8em;
     margin: 16px 0 8px;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6), 0 1px 3px rgba(0, 0, 0, 0.8);
   }
 }
 
@@ -38,6 +39,7 @@
   width: 72px;
   height: auto;
   opacity: 0.9;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5));
 }
 
 .tagline {
@@ -45,6 +47,7 @@
   color: rgba(255, 255, 255, 0.8);
   margin: 0 0 32px;
   font-weight: 300;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.7);
 }
 
 .cta {

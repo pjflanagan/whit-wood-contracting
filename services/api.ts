@@ -7,11 +7,17 @@ import type { PortfolioItem } from '../model/portfolio-item';
 import { EXAMPLE_TESTIMONIALS } from '../model/testimonial';
 import type { Testimonial } from '../model/testimonial';
 import { EXAMPLE_SITE_CONFIG } from '../model/site-config';
-import type { SiteConfig, SocialLinks } from '../model/site-config';
+import type { SiteConfig } from '../model/site-config';
+import { EXAMPLE_SITE_IMAGES } from '../model/site-images';
+import type { SiteImages } from '../model/site-images';
+import { EXAMPLE_SOCIAL_LINKS } from '../model/social-links';
+import type { SocialLinks } from '../model/social-links';
 import notionConfig from '../notion.config';
 
 const NOTION_TOKEN = process.env.NOTION_TOKEN;
 const NOTION_SITE_CONFIG_DB = notionConfig.siteConfigDb;
+const NOTION_SOCIAL_LINKS_DB = notionConfig.socialLinksDb;
+const NOTION_SITE_IMAGES_DB = notionConfig.siteImagesDb;
 const NOTION_SERVICES_DB = notionConfig.servicesDb;
 const NOTION_PORTFOLIO_DB = notionConfig.portfolioDb;
 const NOTION_TESTIMONIALS_DB = notionConfig.testimonialsDb;
@@ -197,33 +203,82 @@ export async function fetchContact(): Promise<string> {
   return (await fetchPageHtml(NOTION_CONTACT_PAGE)) ?? EXAMPLE_CONTACT;
 }
 
-export async function fetchSiteConfig(): Promise<SiteConfig> {
+async function fetchImageDb(dbId: string): Promise<Record<string, string>> {
   const client = createClient();
-  if (!client || !NOTION_SITE_CONFIG_DB) return EXAMPLE_SITE_CONFIG;
-  try {
-    const response = await client.databases.query({
-      database_id: NOTION_SITE_CONFIG_DB,
-      page_size: 1,
-    });
-    const page = response.results.filter(isFullPage)[0];
-    if (!page) return EXAMPLE_SITE_CONFIG;
+  if (!client || !dbId) return {};
+  const response = await client.databases.query({ database_id: dbId });
+  const kv: Record<string, string> = {};
+  for (const page of response.results.filter(isFullPage)) {
     const p = page.properties;
-    const socialLinks: SocialLinks = {
-      facebookUrl: (p['Facebook URL'] as any)?.url ?? undefined,
-      instagramUrl: (p['Instagram URL'] as any)?.url ?? undefined,
-      houzzUrl: (p['Houzz URL'] as any)?.url ?? undefined,
-      yelpUrl: (p['Yelp URL'] as any)?.url ?? undefined,
-      googleUrl: (p['Google URL'] as any)?.url ?? undefined,
-    };
+    const id = richTextToPlain((p['ID'] as any)?.title ?? []);
+    const files: any[] = (p['Image'] as any)?.files ?? [];
+    const url = files[0]
+      ? files[0].type === 'external'
+        ? files[0].external.url
+        : files[0].file.url
+      : '';
+    if (id && url) kv[id] = url;
+  }
+  return kv;
+}
+
+async function fetchKeyValueDb(dbId: string): Promise<Record<string, string>> {
+  const client = createClient();
+  if (!client || !dbId) return {};
+  const response = await client.databases.query({ database_id: dbId });
+  const kv: Record<string, string> = {};
+  for (const page of response.results.filter(isFullPage)) {
+    const p = page.properties;
+    const id = richTextToPlain((p['ID'] as any)?.title ?? []);
+    const value = richTextToPlain((p['Value'] as any)?.rich_text ?? []);
+    if (id) kv[id] = value;
+  }
+  return kv;
+}
+
+export async function fetchSocialLinks(): Promise<SocialLinks> {
+  if (!NOTION_SOCIAL_LINKS_DB) return EXAMPLE_SOCIAL_LINKS;
+  try {
+    const kv = await fetchKeyValueDb(NOTION_SOCIAL_LINKS_DB);
     return {
-      businessName: richTextToPlain((p['Business Name'] as any).title),
-      tagline: richTextToPlain((p.Tagline as any).rich_text),
-      heroImageUrl: (p['Hero Image URL'] as any).url ?? '',
-      ctaLabel: richTextToPlain((p['CTA Label'] as any).rich_text),
-      ctaTarget: richTextToPlain((p['CTA Target'] as any).rich_text),
-      seoDescription: richTextToPlain((p['SEO Description'] as any).rich_text),
-      seoKeywords: richTextToPlain((p['SEO Keywords'] as any).rich_text),
-      socialLinks,
+      facebookUrl: kv['facebookUrl'] || null,
+      instagramUrl: kv['instagramUrl'] || null,
+      houzzUrl: kv['houzzUrl'] || null,
+      yelpUrl: kv['yelpUrl'] || null,
+      googleUrl: kv['googleUrl'] || null,
+    };
+  } catch (e) {
+    console.error('Notion social links fetch error:', e);
+    return EXAMPLE_SOCIAL_LINKS;
+  }
+}
+
+export async function fetchSiteImages(): Promise<SiteImages> {
+  if (!NOTION_SITE_IMAGES_DB) return EXAMPLE_SITE_IMAGES;
+  try {
+    const kv = await fetchImageDb(NOTION_SITE_IMAGES_DB);
+    return {
+      logoUrl: kv['logo'] || null,
+      heroImageUrl: kv['hero-image'] || null,
+      shareCardUrl: kv['share-card'] || null,
+    };
+  } catch (e) {
+    console.error('Notion site images fetch error:', e);
+    return EXAMPLE_SITE_IMAGES;
+  }
+}
+
+export async function fetchSiteConfig(): Promise<SiteConfig> {
+  if (!NOTION_SITE_CONFIG_DB) return EXAMPLE_SITE_CONFIG;
+  try {
+    const kv = await fetchKeyValueDb(NOTION_SITE_CONFIG_DB);
+    return {
+      businessName: kv['businessName'] || EXAMPLE_SITE_CONFIG.businessName,
+      tagline: kv['tagline'] || EXAMPLE_SITE_CONFIG.tagline,
+      ctaLabel: kv['ctaLabel'] || EXAMPLE_SITE_CONFIG.ctaLabel,
+      ctaTarget: kv['ctaTarget'] || EXAMPLE_SITE_CONFIG.ctaTarget,
+      seoDescription: kv['seoDescription'] || EXAMPLE_SITE_CONFIG.seoDescription,
+      seoKeywords: kv['seoKeywords'] || EXAMPLE_SITE_CONFIG.seoKeywords,
     };
   } catch (e) {
     console.error('Notion site config fetch error:', e);

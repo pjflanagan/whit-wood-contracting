@@ -2,7 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { Section } from "./Section";
 import { SocialIconRow } from "../social-icon-row";
-import type { SocialLinks } from "../../model/site-config";
+import type { SocialLinks } from "../../model/social-links";
 
 type FooterSectionProps = {
   socialLinks: SocialLinks;

@@ -1,4 +1,5 @@
 export * from './hero';
+export * from './modal';
 export * from './icon';
 export * from './events-list';
 export * from './social-icon-row';

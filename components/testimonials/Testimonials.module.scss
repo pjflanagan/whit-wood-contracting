@@ -1,10 +1,34 @@
 @import '../../styles/theme.module.scss';
 
+.wrapper {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.featured {
+  width: 100%;
+  padding: 8px 0 12px;
+}
+
+.featuredQuote {
+  margin: 16px 0 20px;
+  font-style: italic;
+  line-height: 1.7;
+  color: $text;
+  font-size: 1.25em;
+  font-weight: 700;
+}
+
+.featuredStars {
+  font-size: 2em;
+}
+
 .grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 20px;
-  margin-top: 16px;
 
   @media (min-width: $md-breakpoint) {
     grid-template-columns: repeat(2, 1fr);
@@ -19,9 +43,28 @@
 }
 
 .stars {
-  color: $accent;
+  display: inline-flex;
+  gap: 2px;
   font-size: 1.1em;
-  letter-spacing: 2px;
+}
+
+.star {
+  position: relative;
+  display: inline-block;
+}
+
+.starBg {
+  color: $accent;
+  opacity: 0.3;
+}
+
+.starFg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  color: $accent;
 }
 
 .quote {
@@ -30,6 +73,22 @@
   line-height: 1.7;
   color: $text;
   font-size: 0.95em;
+}
+
+.showMore {
+  margin-top: 18px;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: 1.17em;
+  font-weight: 600;
+  color: $accent;
+  cursor: pointer;
+
+  &:hover {
+    color: $text;
+  }
 }
 
 .attribution {

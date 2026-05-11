@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { Service } from '../../model/service';
+import { Modal } from '../modal';
 import Style from './ServicesList.module.scss';
 
 const VISIBLE_LIMIT = 7;
@@ -14,54 +15,6 @@ function resolvedTier(s: Service): 'primary' | 'secondary' | 'tertiary' {
 type ServicesListProps = {
   services: Service[];
 };
-
-function Modal({ service, onClose }: { service: Service; onClose: () => void }) {
-  const [slide, setSlide] = useState(0);
-  const images = service.images ?? [];
-  const hasMultiple = images.length > 1;
-
-  return (
-    <div className={Style.modalOverlay} onClick={onClose}>
-      <div className={Style.modal} onClick={(e) => e.stopPropagation()}>
-        <button className={Style.modalClose} onClick={onClose}>✕</button>
-        {images.length > 0 && (
-          <div className={Style.slideshow}>
-            <img src={images[slide]} alt={service.title} className={Style.slide} />
-            {hasMultiple && (
-              <>
-                <button
-                  className={`${Style.slideBtn} ${Style.slidePrev}`}
-                  onClick={() => setSlide((s) => (s - 1 + images.length) % images.length)}
-                >
-                  ‹
-                </button>
-                <button
-                  className={`${Style.slideBtn} ${Style.slideNext}`}
-                  onClick={() => setSlide((s) => (s + 1) % images.length)}
-                >
-                  ›
-                </button>
-                <div className={Style.slideDots}>
-                  {images.map((_, i) => (
-                    <button
-                      key={i}
-                      className={`${Style.dot} ${i === slide ? Style.dotActive : ''}`}
-                      onClick={() => setSlide(i)}
-                    />
-                  ))}
-                </div>
-              </>
-            )}
-          </div>
-        )}
-        <div className={Style.modalBody}>
-          <h3>{service.title}</h3>
-          <p>{service.description}</p>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 export function ServicesList({ services }: ServicesListProps) {
   const [showAll, setShowAll] = useState(false);
@@ -117,14 +70,19 @@ export function ServicesList({ services }: ServicesListProps) {
               className={`${Style.card} ${Style.seeAll}`}
               onClick={() => setShowAll(true)}
             >
-              <span>See all</span>
+              <span>See all &rarr;</span>
             </button>
           )}
         </div>
       </div>
 
       {activeService && (
-        <Modal service={activeService} onClose={() => setActiveService(null)} />
+        <Modal
+          title={activeService.title}
+          description={activeService.description}
+          images={activeService.images}
+          onClose={() => setActiveService(null)}
+        />
       )}
     </>
   );

@@ -7,8 +7,10 @@ import { PortfolioGrid } from '../components/portfolio-grid';
 import { Testimonials } from '../components/testimonials';
 import { ContactForm } from '../components/contact-form';
 import { Section, FooterSection } from '../components/section';
-import { fetchSiteConfig, fetchServices, fetchPortfolio, fetchTestimonials, fetchAbout, fetchContact } from '../services/api';
+import { fetchSiteConfig, fetchSiteImages, fetchSocialLinks, fetchServices, fetchPortfolio, fetchTestimonials, fetchAbout, fetchContact } from '../services/api';
 import type { SiteConfig } from '../model/site-config';
+import type { SiteImages } from '../model/site-images';
+import type { SocialLinks } from '../model/social-links';
 import type { Service } from '../model/service';
 import type { PortfolioItem } from '../model/portfolio-item';
 import type { Testimonial } from '../model/testimonial';
@@ -16,6 +18,8 @@ import Style from './index.module.scss';
 
 type HomePageProps = {
   siteConfig: SiteConfig;
+  siteImages: SiteImages;
+  socialLinks: SocialLinks;
   services: Service[];
   portfolio: PortfolioItem[];
   testimonials: Testimonial[];
@@ -24,8 +28,10 @@ type HomePageProps = {
 };
 
 export const getStaticProps: GetStaticProps<HomePageProps> = async () => {
-  const [siteConfig, services, portfolio, testimonials, aboutHtml, contactHtml] = await Promise.all([
+  const [siteConfig, siteImages, socialLinks, services, portfolio, testimonials, aboutHtml, contactHtml] = await Promise.all([
     fetchSiteConfig(),
+    fetchSiteImages(),
+    fetchSocialLinks(),
     fetchServices(),
     fetchPortfolio(),
     fetchTestimonials(),
@@ -33,12 +39,12 @@ export const getStaticProps: GetStaticProps<HomePageProps> = async () => {
     fetchContact(),
   ]);
   return {
-    props: { siteConfig, services, portfolio, testimonials, aboutHtml, contactHtml },
+    props: { siteConfig, siteImages, socialLinks, services, portfolio, testimonials, aboutHtml, contactHtml },
     revalidate: 3600,
   };
 };
 
-export default function Home({ siteConfig, services, portfolio, testimonials, aboutHtml, contactHtml }: HomePageProps) {
+export default function Home({ siteConfig, siteImages, socialLinks, services, portfolio, testimonials, aboutHtml, contactHtml }: HomePageProps) {
   const heroRef = useRef<HTMLElement>(null);
   return (
     <>
@@ -49,7 +55,7 @@ export default function Home({ siteConfig, services, portfolio, testimonials, ab
         tagline={siteConfig.tagline}
         ctaLabel={siteConfig.ctaLabel}
         ctaTarget={siteConfig.ctaTarget}
-        heroImageUrl={siteConfig.heroImageUrl}
+        heroImageUrl={siteImages.heroImageUrl}
       />
       <main className={Style.page}>
         <div className={Style.layout}>
@@ -75,7 +81,7 @@ export default function Home({ siteConfig, services, portfolio, testimonials, ab
               <h2>About Us</h2>
               <div dangerouslySetInnerHTML={{ __html: aboutHtml }} />
             </Section>
-            <FooterSection socialLinks={siteConfig.socialLinks} />
+            <FooterSection socialLinks={socialLinks} />
           </div>
           <aside className={Style.sidebar}>
             <div className={Style.sidebarInner}>
