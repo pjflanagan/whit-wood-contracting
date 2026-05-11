@@ -6,16 +6,15 @@ type HeroProps = {
   businessName: string;
   tagline: string;
   ctaLabel: string;
-  ctaTarget: string;
   heroImageUrl?: string;
 };
 
 export const Hero = React.forwardRef<HTMLElement, HeroProps>(function Hero(
-  { businessName, tagline, ctaLabel, ctaTarget, heroImageUrl },
+  { businessName, tagline, ctaLabel, heroImageUrl },
   ref
 ) {
   function handleCtaClick() {
-    const target = document.getElementById(ctaTarget);
+    const target = document.getElementById('contact');
     if (target && target.offsetParent !== null) {
       target.scrollIntoView({ behavior: 'smooth' });
     } else {

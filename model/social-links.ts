@@ -6,7 +6,7 @@ export type SocialLinks = {
   googleUrl: string | null;
 };
 
-export const EXAMPLE_SOCIAL_LINKS: SocialLinks = {
+export const DEFAULT_SOCIAL_LINKS: SocialLinks = {
   facebookUrl: null,
   instagramUrl: null,
   houzzUrl: null,

@@ -7,7 +7,7 @@ import { PortfolioGrid } from '../components/portfolio-grid';
 import { Testimonials } from '../components/testimonials';
 import { ContactForm } from '../components/contact-form';
 import { Section, FooterSection } from '../components/section';
-import { fetchSiteConfig, fetchSiteImages, fetchSocialLinks, fetchServices, fetchPortfolio, fetchTestimonials, fetchAbout, fetchContact, fetchSections } from '../services/api';
+import { fetchSiteConfig, fetchSiteImages, fetchSocialLinks, fetchServices, fetchPortfolio, fetchTestimonials, fetchAbout, fetchSections } from '../services/api';
 import type { SiteConfig } from '../model/site-config';
 import type { SiteImages } from '../model/site-images';
 import type { SocialLinks } from '../model/social-links';
@@ -26,11 +26,10 @@ type HomePageProps = {
   testimonials: Testimonial[];
   sections: PageSection[];
   aboutHtml: string;
-  contactHtml: string;
 };
 
 export const getStaticProps: GetStaticProps<HomePageProps> = async () => {
-  const [siteConfig, siteImages, socialLinks, services, portfolio, testimonials, sections, aboutHtml, contactHtml] = await Promise.all([
+  const [siteConfig, siteImages, socialLinks, services, portfolio, testimonials, sections, aboutHtml] = await Promise.all([
     fetchSiteConfig(),
     fetchSiteImages(),
     fetchSocialLinks(),
@@ -39,16 +38,24 @@ export const getStaticProps: GetStaticProps<HomePageProps> = async () => {
     fetchTestimonials(),
     fetchSections(),
     fetchAbout(),
-    fetchContact(),
   ]);
   return {
-    props: { siteConfig, siteImages, socialLinks, services, portfolio, testimonials, sections, aboutHtml, contactHtml },
+    props: { siteConfig, siteImages, socialLinks, services, portfolio, testimonials, sections, aboutHtml },
     revalidate: 3600,
   };
 };
 
-function renderSectionContent(id: string, title: string, description: string, props: Omit<HomePageProps, 'siteConfig' | 'siteImages' | 'socialLinks' | 'sections'>) {
-  const { services, portfolio, testimonials, aboutHtml, contactHtml } = props;
+function ContactInfo({ phone, email }: { phone: string; email: string }) {
+  return (
+    <>
+      {phone && <p><strong>Phone:</strong> <a href={`tel:${phone}`}>{phone}</a></p>}
+      {email && <p><strong>Email:</strong> <a href={`mailto:${email}`}>{email}</a></p>}
+    </>
+  );
+}
+
+function renderSectionContent(id: string, title: string, description: string, props: Omit<HomePageProps, 'siteImages' | 'socialLinks' | 'sections'>) {
+  const { siteConfig, services, portfolio, testimonials, aboutHtml } = props;
   const desc = description ? <p>{description}</p> : null;
   switch (id) {
     case 'services':
@@ -64,7 +71,7 @@ function renderSectionContent(id: string, title: string, description: string, pr
         <Section key={id} id={id} className={Style.contactMobile}>
           <h2>{title}</h2>
           {desc}
-          <div dangerouslySetInnerHTML={{ __html: contactHtml }} />
+          <ContactInfo phone={siteConfig.phone} email={siteConfig.email} />
           <ContactForm serviceNames={services.map((s) => s.title)} />
         </Section>
       );
@@ -97,9 +104,9 @@ function renderSectionContent(id: string, title: string, description: string, pr
   }
 }
 
-export default function Home({ siteConfig, siteImages, socialLinks, services, portfolio, testimonials, sections, aboutHtml, contactHtml }: HomePageProps) {
+export default function Home({ siteConfig, siteImages, socialLinks, services, portfolio, testimonials, sections, aboutHtml }: HomePageProps) {
   const heroRef = useRef<HTMLElement>(null);
-  const contentProps = { services, portfolio, testimonials, aboutHtml, contactHtml };
+  const contentProps = { siteConfig, services, portfolio, testimonials, aboutHtml };
   return (
     <>
       <StickyHeader businessName={siteConfig.businessName} triggerRef={heroRef} />
@@ -108,7 +115,6 @@ export default function Home({ siteConfig, siteImages, socialLinks, services, po
         businessName={siteConfig.businessName}
         tagline={siteConfig.tagline}
         ctaLabel={siteConfig.ctaLabel}
-        ctaTarget={siteConfig.ctaTarget}
         heroImageUrl={siteImages.heroImageUrl}
       />
       <main className={Style.page}>
@@ -120,7 +126,7 @@ export default function Home({ siteConfig, siteImages, socialLinks, services, po
           <aside className={Style.sidebar}>
             <div className={Style.sidebarInner}>
               <h2 className={Style.sidebarHeading}>Get a Free Estimate</h2>
-              <div dangerouslySetInnerHTML={{ __html: contactHtml }} />
+              <ContactInfo phone={siteConfig.phone} email={siteConfig.email} />
               <ContactForm singleColumn serviceNames={services.map((s) => s.title)} />
             </div>
           </aside>
