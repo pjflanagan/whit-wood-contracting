@@ -7,18 +7,24 @@ type PortfolioGridProps = {
   items: PortfolioItem[];
 };
 
+const GRID_LIMIT = 3;
+
 export function PortfolioGrid({ items }: PortfolioGridProps) {
+  const [showAll, setShowAll] = useState(false);
   const [active, setActive] = useState<PortfolioItem | null>(null);
+  const truncated = !showAll && items.length > GRID_LIMIT;
+  const visible = truncated ? items.slice(0, GRID_LIMIT) : items;
 
   return (
     <>
       <div className={Style.grid}>
-        {items.map((item) => (
+        {visible.map((item) => (
           <button key={item.id} className={Style.card} onClick={() => setActive(item)}>
-            <div className={Style.imageWrapper}>
-              {item.photos[0] ? (
-                <img src={item.photos[0]} alt={item.title} style={{ objectFit: 'cover', width: '100%', height: '100%' }} />
-              ) : (
+            <div
+              className={Style.imageWrapper}
+              style={item.photos[0] ? { backgroundImage: `url(${item.photos[0]})` } : undefined}
+            >
+              {!item.photos[0] && (
                 <div className={Style.placeholder}>
                   <span>{item.type}</span>
                 </div>
@@ -32,6 +38,12 @@ export function PortfolioGrid({ items }: PortfolioGridProps) {
           </button>
         ))}
       </div>
+
+      {truncated && (
+        <button className={Style.showMore} onClick={() => setShowAll(true)}>
+          See more &rarr;
+        </button>
+      )}
 
       {active && (
         <Modal

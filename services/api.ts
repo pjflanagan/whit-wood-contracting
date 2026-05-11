@@ -192,7 +192,6 @@ export async function fetchPortfolio(): Promise<PortfolioItem[]> {
   try {
     const response = await client.databases.query({
       database_id: NOTION_PORTFOLIO_DB,
-      sorts: [{ property: 'Name', direction: 'ascending' }],
     });
     return response.results.filter(isFullPage).flatMap((page) => {
       const p = page.properties;
