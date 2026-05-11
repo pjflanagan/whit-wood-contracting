@@ -125,10 +125,14 @@ export async function fetchServices(): Promise<Service[]> {
     });
     return response.results.filter(isFullPage).map((page) => {
       const p = page.properties;
+      const images: string[] = ((p.Images as any)?.files ?? []).map((f: any) =>
+        f.type === 'external' ? f.external.url : f.file.url,
+      );
       return {
         title: richTextToPlain((p.Title as any).title),
         description: richTextToPlain((p.Description as any).rich_text),
         tier: ((p.Tier as any).select?.name?.toLowerCase() ?? null) as Service['tier'],
+        images,
       };
     });
   } catch (e) {

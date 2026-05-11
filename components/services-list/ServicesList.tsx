@@ -15,6 +15,54 @@ type ServicesListProps = {
   services: Service[];
 };
 
+function Modal({ service, onClose }: { service: Service; onClose: () => void }) {
+  const [slide, setSlide] = useState(0);
+  const images = service.images ?? [];
+  const hasMultiple = images.length > 1;
+
+  return (
+    <div className={Style.modalOverlay} onClick={onClose}>
+      <div className={Style.modal} onClick={(e) => e.stopPropagation()}>
+        <button className={Style.modalClose} onClick={onClose}>✕</button>
+        {images.length > 0 && (
+          <div className={Style.slideshow}>
+            <img src={images[slide]} alt={service.title} className={Style.slide} />
+            {hasMultiple && (
+              <>
+                <button
+                  className={`${Style.slideBtn} ${Style.slidePrev}`}
+                  onClick={() => setSlide((s) => (s - 1 + images.length) % images.length)}
+                >
+                  ‹
+                </button>
+                <button
+                  className={`${Style.slideBtn} ${Style.slideNext}`}
+                  onClick={() => setSlide((s) => (s + 1) % images.length)}
+                >
+                  ›
+                </button>
+                <div className={Style.slideDots}>
+                  {images.map((_, i) => (
+                    <button
+                      key={i}
+                      className={`${Style.dot} ${i === slide ? Style.dotActive : ''}`}
+                      onClick={() => setSlide(i)}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+        )}
+        <div className={Style.modalBody}>
+          <h3>{service.title}</h3>
+          <p>{service.description}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function ServicesList({ services }: ServicesListProps) {
   const [showAll, setShowAll] = useState(false);
   const [activeService, setActiveService] = useState<Service | null>(null);
@@ -42,6 +90,7 @@ export function ServicesList({ services }: ServicesListProps) {
       <div className={Style.gridWrapper}>
         <div className={Style.grid}>
           {visible.map((service) => {
+            const image = service.images?.[0];
             const classes = [
               Style.card,
               service.tier === 'primary' && Style.primary,
@@ -53,10 +102,13 @@ export function ServicesList({ services }: ServicesListProps) {
               <button
                 key={service.title}
                 className={classes}
+                style={image ? { backgroundImage: `url(${image})` } : undefined}
                 onClick={() => setActiveService(service)}
               >
-                <h3>{service.title}</h3>
-                <p>{service.description}</p>
+                <div className={[Style.cardContent, image && Style.cardOverlay].filter(Boolean).join(' ')}>
+                  <h3>{service.title}</h3>
+                  <p>{service.description}</p>
+                </div>
               </button>
             );
           })}
@@ -72,15 +124,7 @@ export function ServicesList({ services }: ServicesListProps) {
       </div>
 
       {activeService && (
-        <div className={Style.modalOverlay} onClick={() => setActiveService(null)}>
-          <div className={Style.modal} onClick={(e) => e.stopPropagation()}>
-            <button className={Style.modalClose} onClick={() => setActiveService(null)}>
-              ✕
-            </button>
-            <h3>{activeService.title}</h3>
-            <p>{activeService.description}</p>
-          </div>
-        </div>
+        <Modal service={activeService} onClose={() => setActiveService(null)} />
       )}
     </>
   );

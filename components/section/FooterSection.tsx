@@ -12,7 +12,7 @@ export function FooterSection({ socialLinks }: FooterSectionProps) {
   return (
     <Section id="footer">
       <SocialIconRow socialLinks={socialLinks} />
-      <p style={{ marginTop: "48px", fontSize: "14px", color: "#666" }}>
+      <p style={{ margin: "64px 0 0 0", fontSize: "14px", color: "#0006", textAlign: 'right' }}>
         Website by{" "}
         <Link href="https://pjflanagan.me" target="_blank" title="Peter Flanagan">
           Peter Flanagan
