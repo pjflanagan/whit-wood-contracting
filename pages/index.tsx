@@ -47,17 +47,17 @@ export default function Home({ siteConfig, services, portfolio, testimonials, ab
         ctaTarget={siteConfig.ctaTarget}
         heroImageUrl={siteConfig.heroImageUrl}
       />
-      <main className={Style['page']}>
-        <div className={Style['layout']}>
-          <div className={Style['content']}>
+      <main className={Style.page}>
+        <div className={Style.layout}>
+          <div className={Style.content}>
             <Section id="services">
               <h2>Our Services</h2>
               <ServicesList services={services} />
             </Section>
-            <Section id="contact" className={Style['contact-mobile']}>
+            <Section id="contact" className={Style.contactMobile}>
               <h2>Get in Touch</h2>
               <div dangerouslySetInnerHTML={{ __html: contactHtml }} />
-              <ContactForm serviceNames={services.map(s => s.title)} />
+              <ContactForm serviceNames={services.map((s) => s.title)} />
             </Section>
             <Section id="portfolio">
               <h2>Our Work</h2>
@@ -73,11 +73,11 @@ export default function Home({ siteConfig, services, portfolio, testimonials, ab
             </Section>
             <FooterSection />
           </div>
-          <aside className={Style['sidebar']}>
-            <div className={Style['sidebar-inner']}>
-              <h2 className={Style['sidebar-heading']}>Get a Free Estimate</h2>
+          <aside className={Style.sidebar}>
+            <div className={Style.sidebarInner}>
+              <h2 className={Style.sidebarHeading}>Get a Free Estimate</h2>
               <div dangerouslySetInnerHTML={{ __html: contactHtml }} />
-              <ContactForm singleColumn serviceNames={services.map(s => s.title)} />
+              <ContactForm singleColumn serviceNames={services.map((s) => s.title)} />
             </div>
           </aside>
         </div>

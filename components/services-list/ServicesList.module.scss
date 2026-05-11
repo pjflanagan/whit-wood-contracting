@@ -1,13 +1,20 @@
 @import '../../styles/theme.module.scss';
 
+// Container query context so grid-auto-rows can use cqw (= grid width)
+.gridWrapper {
+  container-type: inline-size;
+  margin-top: 16px;
+}
+
 .grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 16px;
-  margin-top: 16px;
 
   @media (min-width: $md-breakpoint) {
     grid-template-columns: repeat(4, 1fr);
+    // Each row = 1 column-width: (grid-width − 3 gaps) / 4
+    grid-auto-rows: calc((100cqw - 3 * 16px) / 4);
   }
 }
 
@@ -20,7 +27,6 @@
   justify-content: flex-end;
 
   @media (min-width: $md-breakpoint) {
-    aspect-ratio: 1;
     overflow: hidden;
   }
 
@@ -57,11 +63,10 @@
 .secondary {
   @media (min-width: $md-breakpoint) {
     grid-column: span 2;
-    aspect-ratio: auto;
   }
 }
 
-.see-all {
+.seeAll {
   cursor: pointer;
   border: 1px dashed $border;
   background: transparent;

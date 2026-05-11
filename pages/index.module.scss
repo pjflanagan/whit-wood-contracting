@@ -19,7 +19,7 @@
   min-width: 0;
 }
 
-.contact-mobile {
+.contactMobile {
   @media (min-width: $lg-breakpoint) {
     display: none;
   }
@@ -41,11 +41,11 @@
   }
 }
 
-.sidebar-inner {
+.sidebarInner {
   padding: 40px 32px;
 }
 
-.sidebar-heading {
+.sidebarHeading {
   margin: 0 0 8px;
   font-size: 1.4em;
   color: $text;

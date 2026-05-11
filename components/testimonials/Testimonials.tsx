@@ -1,28 +1,27 @@
+import Style from './Testimonials.module.scss';
 import type { Testimonial } from '../../model/testimonial';
-import Style from './style.module.scss';
 
-type TestimonialsProps = {
-  testimonials: Testimonial[];
-};
+type StarsProps = { rating: number };
 
-function Stars({ rating }: { rating: number }) {
+function Stars({ rating }: StarsProps) {
   return (
-    <span className={Style['stars']} aria-label={`${rating} out of 5 stars`}>
-      {'★'.repeat(rating)}{'☆'.repeat(Math.max(0, 5 - rating))}
+    <span className={Style.stars} aria-label={`${rating} out of 5 stars`}>
+      {'★'.repeat(rating)}{'☆'.repeat(5 - rating)}
     </span>
   );
 }
 
+type TestimonialsProps = { testimonials: Testimonial[] };
+
 export function Testimonials({ testimonials }: TestimonialsProps) {
   return (
-    <div className={Style['grid']}>
+    <div className={Style.grid}>
       {testimonials.map((t) => (
-        <div key={t.id} className={Style['card']}>
+        <div key={t.id} className={Style.card}>
           <Stars rating={t.rating} />
-          <blockquote className={Style['quote']}>"{t.quote}"</blockquote>
-          <footer className={Style['attribution']}>
+          <blockquote className={Style.quote}>&ldquo;{t.quote}&rdquo;</blockquote>
+          <footer className={Style.attribution}>
             <strong>{t.clientName}</strong>
-            {t.projectType && <span> — {t.projectType}</span>}
           </footer>
         </div>
       ))}

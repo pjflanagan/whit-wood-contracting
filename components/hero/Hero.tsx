@@ -1,5 +1,6 @@
 import React from 'react';
-import Style from './style.module.scss';
+import Image from 'next/image';
+import Style from './Hero.module.scss';
 
 type HeroProps = {
   businessName: string;
@@ -19,13 +20,13 @@ export function Hero({ businessName, tagline, ctaLabel, ctaTarget, heroImageUrl 
     : undefined;
 
   return (
-    <section className={Style['hero']} style={heroStyle}>
-      <div className={Style['overlay']}>
-        <div className={Style['content']}>
-          <img src="/img/logo/logo.png" alt={`${businessName} logo`} className={Style['logo']} />
+    <section className={Style.hero} style={heroStyle}>
+      <div className={Style.overlay}>
+        <div className={Style.content}>
+          <Image src="/img/logo/logo.png" alt={`${businessName} logo`} className={Style.logo} width={120} height={120} />
           <h1>{businessName}</h1>
-          <p className={Style['tagline']}>{tagline}</p>
-          <button className={Style['cta']} onClick={handleCtaClick}>
+          <p className={Style.tagline}>{tagline}</p>
+          <button className={Style.cta} onClick={handleCtaClick}>
             {ctaLabel}
           </button>
         </div>

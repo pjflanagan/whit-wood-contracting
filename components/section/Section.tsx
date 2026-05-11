@@ -1,6 +1,6 @@
 import { ReactNode } from "react"
 import classNames from "classnames";
-import Style from './style.module.scss';
+import Style from './Section.module.scss';
 
 type SectionProps = {
   children: ReactNode;
@@ -9,7 +9,7 @@ type SectionProps = {
 }
 
 export function Section({ children, id, className: classNameProp }: SectionProps) {
-  const className = classNames(Style["section"], classNameProp);
+  const className = classNames(Style.section, classNameProp);
   return (
     <div className={className} id={id}>
       {children}

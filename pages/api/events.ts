@@ -20,6 +20,7 @@ export async function fetchGoogleCalendarEvents() {
     }
     return responseData.items;
   } catch (e) {
+    // eslint-disable-next-line no-console
     console.error('Error fetching Google Calendar API: ', e);
   }
   return [];
