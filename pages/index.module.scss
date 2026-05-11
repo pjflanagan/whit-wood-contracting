@@ -3,3 +3,50 @@
 .page {
   background: $background;
 }
+
+.layout {
+  display: flex;
+  flex-direction: column;
+
+  @media (min-width: $lg-breakpoint) {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+}
+
+.contact-mobile {
+  @media (min-width: $lg-breakpoint) {
+    display: none;
+  }
+}
+
+.sidebar {
+  display: none;
+
+  @media (min-width: $lg-breakpoint) {
+    display: block;
+    width: 380px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    background: $surface;
+    border-left: 1px solid $border;
+  }
+}
+
+.sidebar-inner {
+  padding: 40px 32px;
+}
+
+.sidebar-heading {
+  margin: 0 0 8px;
+  font-size: 1.4em;
+  color: $text;
+}

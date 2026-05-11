@@ -3,7 +3,9 @@ import Style from './style.module.scss';
 
 type FormStatus = 'idle' | 'submitting' | 'success' | 'error';
 
-export function ContactForm() {
+type Props = { singleColumn?: boolean; serviceNames?: string[] };
+
+export function ContactForm({ singleColumn, serviceNames }: Props = {}) {
   const [status, setStatus] = useState<FormStatus>('idle');
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -40,7 +42,7 @@ export function ContactForm() {
     >
       <input type="hidden" name="form-name" value="contact" />
 
-      <div className={Style['row']}>
+      <div className={singleColumn ? `${Style['row']} ${Style['row-single']}` : Style['row']}>
         <label className={Style['field']}>
           <span>Name <span aria-hidden="true" className={Style['required']}>*</span></span>
           <input type="text" name="name" required autoComplete="name" />
@@ -51,7 +53,7 @@ export function ContactForm() {
         </label>
       </div>
 
-      <div className={Style['row']}>
+      <div className={singleColumn ? `${Style['row']} ${Style['row-single']}` : Style['row']}>
         <label className={Style['field']}>
           <span>Phone</span>
           <input type="tel" name="phone" autoComplete="tel" />
@@ -60,12 +62,9 @@ export function ContactForm() {
           <span>Type of project</span>
           <select name="project_type">
             <option value="">Select one…</option>
-            <option>Kitchen</option>
-            <option>Bathroom</option>
-            <option>Flooring</option>
-            <option>Deck / Patio</option>
-            <option>Basement</option>
-            <option>Painting</option>
+            {(serviceNames ?? []).map(name => (
+              <option key={name}>{name}</option>
+            ))}
             <option>Other</option>
           </select>
         </label>

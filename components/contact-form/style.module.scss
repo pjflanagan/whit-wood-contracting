@@ -18,6 +18,10 @@
   }
 }
 
+.row-single {
+  grid-template-columns: 1fr !important;
+}
+
 .field {
   display: flex;
   flex-direction: column;

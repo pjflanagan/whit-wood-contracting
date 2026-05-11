@@ -54,6 +54,13 @@
   }
 }
 
+.secondary {
+  @media (min-width: $md-breakpoint) {
+    grid-column: span 2;
+    aspect-ratio: auto;
+  }
+}
+
 .see-all {
   cursor: pointer;
   border: 1px dashed $border;

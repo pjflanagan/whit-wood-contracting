@@ -1,7 +1,7 @@
 export type Service = {
   title: string;
   description: string;
-  tier?: 'priority' | 'secondary';
+  tier?: 'priority' | 'secondary' | 'tertiary';
 };
 
 export const EXAMPLE_SERVICES: Service[] = [
@@ -13,6 +13,7 @@ export const EXAMPLE_SERVICES: Service[] = [
   {
     title: 'Bathroom Renovations',
     description: 'Transform your bathroom with modern fixtures, walk-in showers, soaking tubs, and professional tilework.',
+    tier: 'secondary',
   },
   {
     title: 'Flooring Installation',

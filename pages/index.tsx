@@ -48,28 +48,39 @@ export default function Home({ siteConfig, services, portfolio, testimonials, ab
         heroImageUrl={siteConfig.heroImageUrl}
       />
       <main className={Style['page']}>
-        <Section id="services">
-          <h2>Our Services</h2>
-          <ServicesList services={services} />
-        </Section>
-        <Section id="contact">
-          <h2>Get in Touch</h2>
-          <div dangerouslySetInnerHTML={{ __html: contactHtml }} />
-          <ContactForm />
-        </Section>
-        <Section id="portfolio">
-          <h2>Our Work</h2>
-          <PortfolioGrid items={portfolio} />
-        </Section>
-        <Section id="testimonials">
-          <h2>What Our Clients Say</h2>
-          <Testimonials testimonials={testimonials} />
-        </Section>
-        <Section id="about">
-          <h2>About Us</h2>
-          <div dangerouslySetInnerHTML={{ __html: aboutHtml }} />
-        </Section>
-        <FooterSection />
+        <div className={Style['layout']}>
+          <div className={Style['content']}>
+            <Section id="services">
+              <h2>Our Services</h2>
+              <ServicesList services={services} />
+            </Section>
+            <Section id="contact" className={Style['contact-mobile']}>
+              <h2>Get in Touch</h2>
+              <div dangerouslySetInnerHTML={{ __html: contactHtml }} />
+              <ContactForm serviceNames={services.map(s => s.title)} />
+            </Section>
+            <Section id="portfolio">
+              <h2>Our Work</h2>
+              <PortfolioGrid items={portfolio} />
+            </Section>
+            <Section id="testimonials">
+              <h2>What Our Clients Say</h2>
+              <Testimonials testimonials={testimonials} />
+            </Section>
+            <Section id="about">
+              <h2>About Us</h2>
+              <div dangerouslySetInnerHTML={{ __html: aboutHtml }} />
+            </Section>
+            <FooterSection />
+          </div>
+          <aside className={Style['sidebar']}>
+            <div className={Style['sidebar-inner']}>
+              <h2 className={Style['sidebar-heading']}>Get a Free Estimate</h2>
+              <div dangerouslySetInnerHTML={{ __html: contactHtml }} />
+              <ContactForm singleColumn serviceNames={services.map(s => s.title)} />
+            </div>
+          </aside>
+        </div>
       </main>
     </>
   );
