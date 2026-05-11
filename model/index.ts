@@ -4,3 +4,4 @@ export * from './testimonial';
 export * from './site-config';
 export * from './site-images';
 export * from './social-links';
+export * from './section';

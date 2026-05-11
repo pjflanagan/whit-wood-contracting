@@ -12,6 +12,8 @@ import { EXAMPLE_SITE_IMAGES } from '../model/site-images';
 import type { SiteImages } from '../model/site-images';
 import { EXAMPLE_SOCIAL_LINKS } from '../model/social-links';
 import type { SocialLinks } from '../model/social-links';
+import { DEFAULT_SECTIONS } from '../model/section';
+import type { PageSection } from '../model/section';
 import notionConfig from '../notion.config';
 
 const NOTION_TOKEN = process.env.NOTION_TOKEN;
@@ -21,6 +23,7 @@ const NOTION_SITE_IMAGES_DB = notionConfig.siteImagesDb;
 const NOTION_SERVICES_DB = notionConfig.servicesDb;
 const NOTION_PORTFOLIO_DB = notionConfig.portfolioDb;
 const NOTION_TESTIMONIALS_DB = notionConfig.testimonialsDb;
+const NOTION_SECTIONS_DB = notionConfig.sectionsDb;
 const NOTION_ABOUT_PAGE = notionConfig.aboutPage;
 const NOTION_CONTACT_PAGE = notionConfig.contactPage;
 
@@ -177,16 +180,13 @@ export async function fetchTestimonials(): Promise<Testimonial[]> {
   try {
     const response = await client.databases.query({
       database_id: NOTION_TESTIMONIALS_DB,
-      sorts: [{ property: 'Client Name', direction: 'ascending' }],
     });
     return response.results.filter(isFullPage).map((page) => {
       const p = page.properties;
       return {
-        id: page.id,
         clientName: richTextToPlain((p['Client Name'] as any).title),
-        projectType: (p['Project Type'] as any).select?.name ?? '',
         quote: richTextToPlain((p.Quote as any).rich_text),
-        rating: (p.Rating as any).number ?? 5,
+        rating: (p.Stars as any).number ?? 5,
       };
     });
   } catch (e) {
@@ -265,6 +265,27 @@ export async function fetchSiteImages(): Promise<SiteImages> {
   } catch (e) {
     console.error('Notion site images fetch error:', e);
     return EXAMPLE_SITE_IMAGES;
+  }
+}
+
+export async function fetchSections(): Promise<PageSection[]> {
+  const client = createClient();
+  if (!client || !NOTION_SECTIONS_DB) return DEFAULT_SECTIONS;
+  try {
+    const response = await client.databases.query({
+      database_id: NOTION_SECTIONS_DB,
+    });
+    return response.results.filter(isFullPage).map((page) => {
+      const p = page.properties;
+      return {
+        id: richTextToPlain((p['ID'] as any).title),
+        title: richTextToPlain((p['Title'] as any).rich_text),
+        description: richTextToPlain((p['Description'] as any)?.rich_text ?? []),
+      };
+    });
+  } catch (e) {
+    console.error('Notion sections fetch error:', e);
+    return DEFAULT_SECTIONS;
   }
 }
 

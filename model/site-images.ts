@@ -1,11 +1,11 @@
 export type SiteImages = {
-  logoUrl: string | null;
-  heroImageUrl: string | null;
-  shareCardUrl: string | null;
+  logoUrl?: string;
+  heroImageUrl?: string;
+  shareCardUrl?: string;
 };
 
 export const EXAMPLE_SITE_IMAGES: SiteImages = {
-  logoUrl: null,
-  heroImageUrl: null,
-  shareCardUrl: null,
+  logoUrl: undefined,
+  heroImageUrl: undefined,
+  shareCardUrl: undefined,
 };
