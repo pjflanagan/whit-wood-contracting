@@ -2,15 +2,24 @@
   "services": [
     {
       "title": "Wood Flooring",
-      "description": "From classic oak to rich walnut, wood floors are attractive and durable, making them ideal for active homes. Their thermal features provide warmth in winter and coolness in summer. Investing in wood flooring is guaranteed to boost your home's value. Also, don't hesitate to ask us about our environmentally friendly choices!"
+      "description": "From classic oak to rich walnut, wood floors are attractive and durable, making them ideal for active homes. Their thermal features provide warmth in winter and coolness in summer. Investing in wood flooring is guaranteed to boost your home's value. Also, don't hesitate to ask us about our environmentally friendly choices!",
+      "images": [
+        "/uploads/floor-1.webp"
+      ]
     },
     {
       "title": "Interior Renovation",
-      "description": "Enhance your living experience and home value by transforming unused spaces or adding character to your living areas."
+      "description": "Enhance your living experience and home value by transforming unused spaces or adding character to your living areas.",
+      "images": [
+        "/uploads/wallpaper-1.webp"
+      ]
     },
     {
       "title": "Landscape Installation",
-      "description": "Bring those front and backyard dreams to life, exactly how you envisioned it. Partnered with arborists, we offer environmentally sound advice with ways to enhance your landscape while also protecting our wildlife."
+      "description": "Bring those front and backyard dreams to life, exactly how you envisioned it. Partnered with arborists, we offer environmentally sound advice with ways to enhance your landscape while also protecting our wildlife.",
+      "images": [
+        "/uploads/planter-2.webp"
+      ]
     },
     {
       "title": "Epoxy Flooring",
