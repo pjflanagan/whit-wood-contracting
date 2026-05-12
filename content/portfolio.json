@@ -4,7 +4,10 @@
       "title": "Entranceway Flooring",
       "description": "Upgraded entranceway with sustainable hardwood floors.",
       "type": "Flooring",
-      "photos": []
+      "photos": [
+        "/uploads/floor-2.jpg",
+        "/uploads/floor-1.webp"
+      ]
     },
     {
       "title": "Walk-In Closet",
