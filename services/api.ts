@@ -47,7 +47,10 @@ function markdownToHtml(md: string): string {
 export async function fetchServices(): Promise<Service[]> {
   try {
     const { services } = await fetchJson<{ services: Service[] }>('services.json');
-    return services;
+    return services.map((svc) => ({
+      ...svc,
+      images: svc.images?.map((p) => resolveUploadUrl(p) ?? p),
+    }));
   } catch {
     return DEFAULT_SERVICES;
   }
