@@ -41,7 +41,7 @@ export const getStaticProps: GetStaticProps<HomePageProps> = async () => {
   ]);
   return {
     props: { siteConfig, siteImages, socialLinks, services, portfolio, testimonials, sections, aboutHtml },
-    revalidate: 3600,
+    revalidate: 1800,
   };
 };
 
