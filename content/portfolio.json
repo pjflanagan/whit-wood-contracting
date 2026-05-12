@@ -21,7 +21,9 @@
       "title": "Bathroom Flooring",
       "description": "Remodeled bathroom to sustainable hardwood flooring.",
       "type": "Bathroom",
-      "photos": []
+      "photos": [
+        "/uploads/bathroom-1.webp"
+      ]
     },
     {
       "title": "Stairwell Wallpaper",
