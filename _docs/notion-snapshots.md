@@ -20,15 +20,33 @@ The read/write logic lives in `services/snapshot.ts`. Writes are best-effort —
 | `notion-snapshots/testimonials.json` | `fetchTestimonials()` |
 | `notion-snapshots/sections.json` | `fetchSections()` |
 | `notion-snapshots/site-config.json` | `fetchSiteConfig()` |
-| `notion-snapshots/site-images.json` | `fetchSiteImages()` |
+| `notion-snapshots/site-images-local.json` | `fetchSiteImages()` |
 | `notion-snapshots/social-links.json` | `fetchSocialLinks()` |
 | `notion-snapshots/about.json` | `fetchAbout()` |
 
+## Image Snapshots
+
+Site images (logo, hero, share card) are downloaded as actual files in addition to the JSON snapshot. Notion's image URLs are signed and expire after ~1 hour, so caching the URL alone is not enough.
+
+On a successful `fetchSiteImages()`, each image is fetched and written to `public/notion-snapshots/`:
+
+| File | Image |
+|---|---|
+| `public/notion-snapshots/logo.<ext>` | Logo |
+| `public/notion-snapshots/hero-image.<ext>` | Hero background |
+| `public/notion-snapshots/share-card.<ext>` | OG share card |
+
+The local paths are stored in `notion-snapshots/site-images-local.json`. When Notion fails, that file is read and the local paths (e.g. `/notion-snapshots/logo.jpg`) are returned instead of null.
+
+The extension is detected from the response `Content-Type` header (`png`, `webp`, or `jpg`).
+
+Portfolio photos are not cached this way — they degrade gracefully when missing and would bloat the repo.
+
 ## Keeping Snapshots Up to Date
 
-Snapshot files are committed to the repo. Vercel bundles them with each deploy, so they are always available as a fallback in production.
+Snapshot files and images are committed to the repo. Vercel bundles them with each deploy, so they are always available as a fallback in production.
 
-To refresh the committed snapshots, run the dev server locally while Notion is available — every page load that triggers a fetch will overwrite the corresponding file with fresh data. Commit and push the updated files.
+To refresh them, run the dev server locally while Notion is available — every page load that triggers a fetch will overwrite the corresponding files with fresh data. Commit and push the updated files.
 
 ## When Snapshots Are Used
 

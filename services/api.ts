@@ -15,7 +15,7 @@ import type { SocialLinks } from '../model/social-links';
 import { DEFAULT_SECTIONS } from '../model/section';
 import type { PageSection } from '../model/section';
 import notionConfig from '../notion.config';
-import { readSnapshot, writeSnapshot } from './snapshot';
+import { readSnapshot, writeSnapshot, downloadImage } from './snapshot';
 
 const NOTION_TOKEN = process.env.NOTION_TOKEN;
 const NOTION_SITE_CONFIG_DB = notionConfig.siteConfigDb;
@@ -304,7 +304,7 @@ export async function fetchSocialLinks(): Promise<SocialLinks> {
 }
 
 export async function fetchSiteImages(): Promise<SiteImages> {
-  if (!NOTION_SITE_IMAGES_DB) return readSnapshot<SiteImages>('site-images') ?? DEFAULT_SITE_IMAGES;
+  if (!NOTION_SITE_IMAGES_DB) return readSnapshot<SiteImages>('site-images-local') ?? DEFAULT_SITE_IMAGES;
   try {
     const kv = await fetchImageDb(NOTION_SITE_IMAGES_DB);
     const result: SiteImages = {
@@ -312,11 +312,20 @@ export async function fetchSiteImages(): Promise<SiteImages> {
       heroImageUrl: kv['hero-image'] || null,
       shareCardUrl: kv['share-card'] || null,
     };
-    writeSnapshot('site-images', result);
+    const [logoLocal, heroLocal, shareCardLocal] = await Promise.all([
+      result.logoUrl ? downloadImage(result.logoUrl, 'logo') : Promise.resolve(null),
+      result.heroImageUrl ? downloadImage(result.heroImageUrl, 'hero-image') : Promise.resolve(null),
+      result.shareCardUrl ? downloadImage(result.shareCardUrl, 'share-card') : Promise.resolve(null),
+    ]);
+    writeSnapshot('site-images-local', {
+      logoUrl: logoLocal,
+      heroImageUrl: heroLocal,
+      shareCardUrl: shareCardLocal,
+    });
     return result;
   } catch (e) {
     console.error('Notion site images fetch error:', e);
-    return readSnapshot<SiteImages>('site-images') ?? DEFAULT_SITE_IMAGES;
+    return readSnapshot<SiteImages>('site-images-local') ?? DEFAULT_SITE_IMAGES;
   }
 }
 

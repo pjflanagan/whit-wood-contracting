@@ -1,4 +1,4 @@
-@import '../../styles/theme.module.scss';
+@use '../../styles/theme' as *;
 
 .hero {
   position: relative;
