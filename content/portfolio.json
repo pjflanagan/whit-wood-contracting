@@ -29,8 +29,11 @@
     {
       "title": "Wrap-Around Planter",
       "description": "Transformed the entranceway to this home by adding a wrap-around planter box.",
-      "type": "",
-      "photos": []
+      "type": "Landscaping",
+      "photos": [
+        "/uploads/planter-2.webp",
+        "/uploads/planter-1.webp"
+      ]
     }
   ]
 }
