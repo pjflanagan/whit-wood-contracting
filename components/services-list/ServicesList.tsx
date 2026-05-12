@@ -42,9 +42,11 @@ export function ServicesList({ services }: ServicesListProps) {
                   [Style.primary]: i === 0,
                   [Style.secondary]: i === 1,
                 })}
-                style={image ? { backgroundImage: `url(${image})` } : undefined}
                 onClick={() => setActiveService(service)}
               >
+                {image && (
+                  <div className={Style.cardBg} style={{ backgroundImage: `url(${image})` }} />
+                )}
                 <div className={cx(Style.cardContent, { [Style.cardOverlay]: !!image })}>
                   <h3>{service.title}</h3>
                   <p>{service.description}</p>

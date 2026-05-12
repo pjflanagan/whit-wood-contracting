@@ -3,19 +3,22 @@
 .modalOverlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  padding: 24px;
+  padding: 16px;
 }
 
 .modal {
   background: $surface;
   border: 1px solid $border;
-  max-width: 520px;
+  max-width: 1000px;
   width: 100%;
+  max-height: calc(100vh - 32px);
+  display: flex;
+  flex-direction: column;
   position: relative;
   overflow: hidden;
 }
@@ -60,7 +63,9 @@
 .slideshow {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 9;
+  flex: 1;
+  min-height: 0;
+  aspect-ratio: 4 / 3;
   background: $border;
   overflow: hidden;
 }

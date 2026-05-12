@@ -16,11 +16,14 @@
 }
 
 .card {
+  aspect-ratio: 2 / 3;
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
   border: 1px solid $border;
   overflow: hidden;
   background: $surface;
+  position: relative;
   padding: 0;
   text-align: left;
   font-family: inherit;
@@ -34,17 +37,16 @@
 }
 
 .imageWrapper {
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  flex-shrink: 0;
+  position: absolute;
+  inset: 0;
   background-color: $surface;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  transition: background-size 0.3s ease;
+  transition: transform 0.4s ease;
 
-  &:hover {
-    background-size: 110%;
+  .card:hover & {
+    transform: scale(1.07);
   }
 }
 
@@ -63,7 +65,10 @@
 }
 
 .info {
+  position: relative;
+  z-index: 1;
   padding: 16px 20px 20px;
+  background: #{$surface}ee;
 }
 
 .category {
