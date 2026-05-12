@@ -6,7 +6,9 @@
       "type": "Flooring",
       "photos": [
         "/uploads/floor-2.jpg",
-        "/uploads/floor-1.webp"
+        "/uploads/floor-1.webp",
+        "/uploads/floor-3.webp",
+        "/uploads/floor-4.webp"
       ]
     },
     {
@@ -14,7 +16,9 @@
       "description": "Redid flooring and designed storage solution for a walk-in closet.",
       "type": "Storage Solutions",
       "photos": [
-        "/uploads/closet-1.jpg"
+        "/uploads/closet-1.jpg",
+        "/uploads/closet-2.jpg",
+        "/uploads/closet-3.webp"
       ]
     },
     {
@@ -30,7 +34,8 @@
       "description": "Beautified the stairwell of this home with new wallpaper.",
       "type": "Interior Design",
       "photos": [
-        "/uploads/wallpaper-1.webp"
+        "/uploads/wallpaper-1.webp",
+        "/uploads/wallpaper-2.webp"
       ]
     },
     {
@@ -39,7 +44,18 @@
       "type": "Landscaping",
       "photos": [
         "/uploads/planter-1.webp",
-        "/uploads/planter-2.webp"
+        "/uploads/planter-2.webp",
+        "/uploads/planter-3.webp",
+        "/uploads/planter-4.webp"
+      ]
+    },
+    {
+      "title": "Porch Rebuild",
+      "description": "Rebuilt outdated and unsafe porch. ",
+      "type": "Deck",
+      "photos": [
+        "/uploads/porch-1.webp",
+        "/uploads/porch-2.webp"
       ]
     }
   ]
