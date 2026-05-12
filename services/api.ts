@@ -15,6 +15,7 @@ import type { SocialLinks } from '../model/social-links';
 import { DEFAULT_SECTIONS } from '../model/section';
 import type { PageSection } from '../model/section';
 import notionConfig from '../notion.config';
+import { readSnapshot, writeSnapshot } from './snapshot';
 
 const NOTION_TOKEN = process.env.NOTION_TOKEN;
 const NOTION_SITE_CONFIG_DB = notionConfig.siteConfigDb;
@@ -162,12 +163,12 @@ async function fetchPageHtml(pageId: string | undefined): Promise<string | null>
 
 export async function fetchServices(): Promise<Service[]> {
   const client = createClient();
-  if (!client || !NOTION_SERVICES_DB) return DEFAULT_SERVICES;
+  if (!client || !NOTION_SERVICES_DB) return readSnapshot<Service[]>('services') ?? DEFAULT_SERVICES;
   try {
     const response = await client.databases.query({
       database_id: NOTION_SERVICES_DB,
     });
-    return response.results.filter(isFullPage).flatMap((page) => {
+    const result = response.results.filter(isFullPage).flatMap((page) => {
       const p = page.properties;
       const title = safeTitle(p.Title);
       if (!title) return [];
@@ -178,20 +179,22 @@ export async function fetchServices(): Promise<Service[]> {
         images: safeFiles(p.Images),
       }];
     }).sort((a, b) => a.order - b.order).map(({ order: _order, ...s }) => s);
+    writeSnapshot('services', result);
+    return result;
   } catch (e) {
     console.error('Notion services fetch error:', e);
-    return DEFAULT_SERVICES;
+    return readSnapshot<Service[]>('services') ?? DEFAULT_SERVICES;
   }
 }
 
 export async function fetchPortfolio(): Promise<PortfolioItem[]> {
   const client = createClient();
-  if (!client || !NOTION_PORTFOLIO_DB) return DEFAULT_PORTFOLIO;
+  if (!client || !NOTION_PORTFOLIO_DB) return readSnapshot<PortfolioItem[]>('portfolio') ?? DEFAULT_PORTFOLIO;
   try {
     const response = await client.databases.query({
       database_id: NOTION_PORTFOLIO_DB,
     });
-    return response.results.filter(isFullPage).flatMap((page) => {
+    const result = response.results.filter(isFullPage).flatMap((page) => {
       const p = page.properties;
       const title = safeTitle(p.Name);
       if (!title) return [];
@@ -204,20 +207,22 @@ export async function fetchPortfolio(): Promise<PortfolioItem[]> {
         photos: safeFiles(p.Photos),
       }];
     }).sort((a, b) => a.order - b.order).map(({ order: _order, ...item }) => item);
+    writeSnapshot('portfolio', result);
+    return result;
   } catch (e) {
     console.error('Notion portfolio fetch error:', e);
-    return DEFAULT_PORTFOLIO;
+    return readSnapshot<PortfolioItem[]>('portfolio') ?? DEFAULT_PORTFOLIO;
   }
 }
 
 export async function fetchTestimonials(): Promise<Testimonial[]> {
   const client = createClient();
-  if (!client || !NOTION_TESTIMONIALS_DB) return DEFAULT_TESTIMONIALS;
+  if (!client || !NOTION_TESTIMONIALS_DB) return readSnapshot<Testimonial[]>('testimonials') ?? DEFAULT_TESTIMONIALS;
   try {
     const response = await client.databases.query({
       database_id: NOTION_TESTIMONIALS_DB,
     });
-    return response.results.filter(isFullPage).flatMap((page) => {
+    const result = response.results.filter(isFullPage).flatMap((page) => {
       const p = page.properties;
       const clientName = safeTitle(p['Client Name']);
       const quote = safeRichText(p.Quote);
@@ -229,14 +234,21 @@ export async function fetchTestimonials(): Promise<Testimonial[]> {
         rating: safeNumber(p.Stars, 5),
       }];
     }).sort((a, b) => a.order - b.order).map(({ order: _order, ...t }) => t);
+    writeSnapshot('testimonials', result);
+    return result;
   } catch (e) {
     console.error('Notion testimonials fetch error:', e);
-    return DEFAULT_TESTIMONIALS;
+    return readSnapshot<Testimonial[]>('testimonials') ?? DEFAULT_TESTIMONIALS;
   }
 }
 
 export async function fetchAbout(): Promise<string> {
-  return (await fetchPageHtml(NOTION_ABOUT_PAGE)) ?? '';
+  const result = await fetchPageHtml(NOTION_ABOUT_PAGE);
+  if (result !== null) {
+    writeSnapshot('about', result);
+    return result;
+  }
+  return readSnapshot<string>('about') ?? '';
 }
 
 async function fetchImageDb(dbId: string): Promise<Record<string, string>> {
@@ -273,45 +285,49 @@ async function fetchKeyValueDb(dbId: string): Promise<Record<string, string>> {
 }
 
 export async function fetchSocialLinks(): Promise<SocialLinks> {
-  if (!NOTION_SOCIAL_LINKS_DB) return DEFAULT_SOCIAL_LINKS;
+  if (!NOTION_SOCIAL_LINKS_DB) return readSnapshot<SocialLinks>('social-links') ?? DEFAULT_SOCIAL_LINKS;
   try {
     const kv = await fetchKeyValueDb(NOTION_SOCIAL_LINKS_DB);
-    return {
+    const result: SocialLinks = {
       facebookUrl: kv.facebookUrl || null,
       instagramUrl: kv.instagramUrl || null,
       houzzUrl: kv.houzzUrl || null,
       yelpUrl: kv.yelpUrl || null,
       googleUrl: kv.googleUrl || null,
     };
+    writeSnapshot('social-links', result);
+    return result;
   } catch (e) {
     console.error('Notion social links fetch error:', e);
-    return DEFAULT_SOCIAL_LINKS;
+    return readSnapshot<SocialLinks>('social-links') ?? DEFAULT_SOCIAL_LINKS;
   }
 }
 
 export async function fetchSiteImages(): Promise<SiteImages> {
-  if (!NOTION_SITE_IMAGES_DB) return DEFAULT_SITE_IMAGES;
+  if (!NOTION_SITE_IMAGES_DB) return readSnapshot<SiteImages>('site-images') ?? DEFAULT_SITE_IMAGES;
   try {
     const kv = await fetchImageDb(NOTION_SITE_IMAGES_DB);
-    return {
+    const result: SiteImages = {
       logoUrl: kv.logo || null,
       heroImageUrl: kv['hero-image'] || null,
       shareCardUrl: kv['share-card'] || null,
     };
+    writeSnapshot('site-images', result);
+    return result;
   } catch (e) {
     console.error('Notion site images fetch error:', e);
-    return DEFAULT_SITE_IMAGES;
+    return readSnapshot<SiteImages>('site-images') ?? DEFAULT_SITE_IMAGES;
   }
 }
 
 export async function fetchSections(): Promise<PageSection[]> {
   const client = createClient();
-  if (!client || !NOTION_SECTIONS_DB) return DEFAULT_SECTIONS;
+  if (!client || !NOTION_SECTIONS_DB) return readSnapshot<PageSection[]>('sections') ?? DEFAULT_SECTIONS;
   try {
     const response = await client.databases.query({
       database_id: NOTION_SECTIONS_DB,
     });
-    return response.results.filter(isFullPage).flatMap((page) => {
+    const result = response.results.filter(isFullPage).flatMap((page) => {
       const p = page.properties;
       const id = safeTitle(p.ID);
       const title = safeRichText(p.Title);
@@ -323,17 +339,19 @@ export async function fetchSections(): Promise<PageSection[]> {
         description: safeRichText(p.Description),
       }];
     }).sort((a, b) => a.order - b.order).map(({ order: _order, ...s }) => s);
+    writeSnapshot('sections', result);
+    return result;
   } catch (e) {
     console.error('Notion sections fetch error:', e);
-    return DEFAULT_SECTIONS;
+    return readSnapshot<PageSection[]>('sections') ?? DEFAULT_SECTIONS;
   }
 }
 
 export async function fetchSiteConfig(): Promise<SiteConfig> {
-  if (!NOTION_SITE_CONFIG_DB) return DEFAULT_SITE_CONFIG;
+  if (!NOTION_SITE_CONFIG_DB) return readSnapshot<SiteConfig>('site-config') ?? DEFAULT_SITE_CONFIG;
   try {
     const kv = await fetchKeyValueDb(NOTION_SITE_CONFIG_DB);
-    return {
+    const result: SiteConfig = {
       businessName: kv.businessName || '',
       tagline: kv.tagline || '',
       ctaLabel: kv.buttonLabel || '',
@@ -342,8 +360,10 @@ export async function fetchSiteConfig(): Promise<SiteConfig> {
       phone: kv.phone || '',
       email: kv.email || '',
     };
+    writeSnapshot('site-config', result);
+    return result;
   } catch (e) {
     console.error('Notion site config fetch error:', e);
-    return DEFAULT_SITE_CONFIG;
+    return readSnapshot<SiteConfig>('site-config') ?? DEFAULT_SITE_CONFIG;
   }
 }

@@ -6,7 +6,7 @@ import "../styles/index.scss";
 
 export default function App({ Component, pageProps }: { Component: React.ComponentType<any>; pageProps: { siteConfig?: SiteConfig } & Record<string, unknown> }) {
   const config = pageProps.siteConfig;
-  const title = config?.businessName ?? 'Ridge & Rail Renovations';
+  const title = config?.businessName ?? 'Whit Wood Construction';
   const subtitle = config?.tagline ?? 'Licensed General Contractor';
   const description = config?.seoDescription ?? '';
   const keywords = config?.seoKeywords ?? '';
