@@ -49,7 +49,7 @@ export async function fetchServices(): Promise<Service[]> {
     const { services } = await fetchJson<{ services: Service[] }>('services.json');
     return services.map((svc) => ({
       ...svc,
-      images: svc.images?.map((p) => resolveUploadUrl(p) ?? p),
+      images: (svc.images ?? []).map((p) => resolveUploadUrl(p) ?? p),
     }));
   } catch {
     return DEFAULT_SERVICES;
