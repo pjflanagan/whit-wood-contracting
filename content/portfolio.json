@@ -3,13 +3,13 @@
     {
       "title": "Entranceway Flooring",
       "description": "Upgraded entranceway with sustainable hardwood floors.",
-      "type": "",
+      "type": "Flooring",
       "photos": []
     },
     {
       "title": "Walk-In Closet",
       "description": "Redid flooring and designed storage solution for a walk-in closet.",
-      "type": "",
+      "type": "Storage Solutions",
       "photos": [
         "/uploads/closet-1.jpg"
       ]
@@ -17,14 +17,16 @@
     {
       "title": "Bathroom Flooring",
       "description": "Remodeled bathroom to sustainable hardwood flooring.",
-      "type": "",
+      "type": "Bathroom",
       "photos": []
     },
     {
       "title": "Stairwell Wallpaper",
       "description": "Beautified the stairwell of this home with new wallpaper.",
-      "type": "",
-      "photos": []
+      "type": "Interior Design",
+      "photos": [
+        "/uploads/wallpaper-1.webp"
+      ]
     },
     {
       "title": "Wrap-Around Planter",
