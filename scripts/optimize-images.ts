@@ -8,6 +8,8 @@ const TARGET_DIRS = [
 ];
 const MAX_WIDTH = 2000;
 const QUALITY = 80;
+const MIN_SIZE_KB = 100;
+const MIN_REDUCTION_THRESHOLD = 0.95; // Must reduce size by at least 5%
 
 async function walk(dir: string): Promise<string[]> {
   const files = await fs.readdir(dir);
@@ -47,14 +49,22 @@ async function optimizeImages() {
       const stats = await fs.stat(filePath);
       const originalSize = stats.size;
 
-      console.log(`Processing ${file} (${(originalSize / 1024).toFixed(2)} KB)...`);
-
       const image = sharp(filePath);
       const metadata = await image.metadata();
 
+      const needsResize = !!(metadata.width && metadata.width > MAX_WIDTH);
+      const isLargeEnough = originalSize > MIN_SIZE_KB * 1024;
+
+      if (!needsResize && !isLargeEnough) {
+        console.log(`Skipping ${file}: already small (${(originalSize / 1024).toFixed(2)} KB) and within dimensions.`);
+        continue;
+      }
+
+      console.log(`Processing ${file} (${(originalSize / 1024).toFixed(2)} KB)...`);
+
       let pipeline = image;
 
-      if (metadata.width && metadata.width > MAX_WIDTH) {
+      if (needsResize) {
         pipeline = pipeline.resize(MAX_WIDTH);
       }
 
@@ -68,9 +78,11 @@ async function optimizeImages() {
 
       const buffer = await pipeline.toBuffer();
       
-      if (buffer.length < originalSize) {
+      if (buffer.length < originalSize * MIN_REDUCTION_THRESHOLD) {
         await fs.writeFile(filePath, buffer);
         console.log(`Optimized ${file}: ${(originalSize / 1024).toFixed(2)} KB -> ${(buffer.length / 1024).toFixed(2)} KB`);
+      } else if (buffer.length < originalSize) {
+        console.log(`Skipped ${file}: reduction was not significant enough to justify re-compression`);
       } else {
         console.log(`Skipped ${file}: optimization did not reduce file size`);
       }
