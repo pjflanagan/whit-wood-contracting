@@ -16,6 +16,15 @@ import { DEFAULT_SECTIONS } from '../model/section';
 const CONTENT_BASE =
   'https://raw.githubusercontent.com/pjflanagan/whit-wood-contracting/main/content';
 
+const UPLOADS_BASE =
+  'https://raw.githubusercontent.com/pjflanagan/whit-wood-contracting/main/public';
+
+function resolveUploadUrl(path: string | null | undefined): string | null {
+  if (!path) return null;
+  if (path.startsWith('/uploads/')) return `${UPLOADS_BASE}${path}`;
+  return path;
+}
+
 async function fetchJson<T>(file: string): Promise<T> {
   const res = await fetch(`${CONTENT_BASE}/${file}`, { cache: 'no-store' });
   if (!res.ok) throw new Error(`fetch ${file} failed: ${res.status}`);
@@ -47,7 +56,10 @@ export async function fetchServices(): Promise<Service[]> {
 export async function fetchPortfolio(): Promise<PortfolioItem[]> {
   try {
     const { portfolio } = await fetchJson<{ portfolio: PortfolioItem[] }>('portfolio.json');
-    return portfolio;
+    return portfolio.map((item) => ({
+      ...item,
+      photos: item.photos.map((p) => resolveUploadUrl(p) ?? p),
+    }));
   } catch {
     return DEFAULT_PORTFOLIO;
   }
@@ -98,7 +110,12 @@ export async function fetchSocialLinks(): Promise<SocialLinks> {
 
 export async function fetchSiteImages(): Promise<SiteImages> {
   try {
-    return await fetchJson<SiteImages>('site-images.json');
+    const images = await fetchJson<SiteImages>('site-images.json');
+    return {
+      logoUrl: resolveUploadUrl(images.logoUrl),
+      heroImageUrl: resolveUploadUrl(images.heroImageUrl),
+      shareCardUrl: resolveUploadUrl(images.shareCardUrl),
+    };
   } catch {
     return DEFAULT_SITE_IMAGES;
   }
