@@ -13,11 +13,12 @@ export function ContactForm({ singleColumn, serviceNames }: Props = {}) {
     setStatus('submitting');
     const form = e.currentTarget;
     try {
-      await fetch('/__forms.html', {
+      const res = await fetch('/__forms.html', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams(new FormData(form) as any).toString(),
       });
+      if (!res.ok) throw new Error(`Form submission failed: ${res.status}`);
       setStatus('success');
     } catch {
       setStatus('error');
