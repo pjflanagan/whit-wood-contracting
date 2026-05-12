@@ -4,6 +4,7 @@
     "build": "next build",
     "dev": "next dev",
     "start": "next start",
+    "seed-snapshots": "tsx --env-file=.env scripts/seed-snapshots.ts",
     "lint": "eslint .",
     "format": "prettier --write ."
   },
@@ -31,6 +32,7 @@
     "eslint-config-next": "^16.2.6",
     "eslint-config-prettier": "^10.1.8",
     "prettier": "^3.8.3",
+    "tsx": "^4.21.0",
     "typescript": "5.4.5"
   }
 }

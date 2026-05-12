@@ -1,0 +1,27 @@
+[
+  {
+    "id": "services",
+    "title": "Our Servies",
+    "description": "We service a wide variety of projects in the Durham, Chapel Hill, and Raleigh area."
+  },
+  {
+    "id": "contact",
+    "title": "Get in Touch",
+    "description": ""
+  },
+  {
+    "id": "testimonials",
+    "title": "What Our Clients Say",
+    "description": ""
+  },
+  {
+    "id": "about",
+    "title": "About Us",
+    "description": ""
+  },
+  {
+    "id": "portfolio",
+    "title": "Our Work",
+    "description": ""
+  }
+]
