@@ -1,0 +1,24 @@
+{
+  "services": [
+    {
+      "title": "Wood Flooring",
+      "description": "From classic oak to rich walnut, wood floors are attractive and durable, making them ideal for active homes. Their thermal features provide warmth in winter and coolness in summer. Investing in wood flooring is guaranteed to boost your home's value. Also, don't hesitate to ask us about our environmentally friendly choices!"
+    },
+    {
+      "title": "Interior Renovation",
+      "description": "Enhance your living experience and home value by transforming unused spaces or adding character to your living areas."
+    },
+    {
+      "title": "Landscape Installation",
+      "description": "Bring those front and backyard dreams to life, exactly how you envisioned it. Partnered with arborists, we offer environmentally sound advice with ways to enhance your landscape while also protecting our wildlife."
+    },
+    {
+      "title": "Epoxy Flooring",
+      "description": "Enhance your space with epoxy flooring! This smooth surface is known for its durability, making it ideal for businesses, garages, gyms and more. Its glossy finish is easy to clean and comes in many colors and styles to meet your specific needs. Contact us to set up a consultation."
+    },
+    {
+      "title": "Epoxy Countertops",
+      "description": "Epoxy countertops boast a sleek, polished surface that mimics the elegance of marble or granite. Its durable, tough finish resists stains, scratches, and heat, making them exceptionally easy to maintain. Available in a wide array of colors and patterns, they provide lasting beauty and a stylish, modern touch for both homes and businesses."
+    }
+  ]
+}

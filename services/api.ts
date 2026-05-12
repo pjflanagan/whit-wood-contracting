@@ -1,5 +1,3 @@
-import fs from 'fs';
-import path from 'path';
 import type { Service } from '../model/service';
 import type { PortfolioItem } from '../model/portfolio-item';
 import type { Testimonial } from '../model/testimonial';
@@ -7,17 +5,21 @@ import type { SiteConfig } from '../model/site-config';
 import type { SiteImages } from '../model/site-images';
 import type { SocialLinks } from '../model/social-links';
 import type { PageSection } from '../model/section';
+import { DEFAULT_SERVICES } from '../model/service';
+import { DEFAULT_PORTFOLIO } from '../model/portfolio-item';
+import { DEFAULT_TESTIMONIALS } from '../model/testimonial';
+import { DEFAULT_SITE_CONFIG } from '../model/site-config';
 import { DEFAULT_SITE_IMAGES } from '../model/site-images';
 import { DEFAULT_SOCIAL_LINKS } from '../model/social-links';
+import { DEFAULT_SECTIONS } from '../model/section';
 
-function readJson<T>(filePath: string): T {
-  return JSON.parse(fs.readFileSync(filePath, 'utf-8')) as T;
-}
+const CONTENT_BASE =
+  'https://raw.githubusercontent.com/pjflanagan/whit-wood-contracting/main/content';
 
-function readDir<T>(dir: string): T[] {
-  return fs.readdirSync(dir)
-    .filter((f) => f.endsWith('.json'))
-    .map((f) => readJson<T>(path.join(dir, f)));
+async function fetchJson<T>(file: string): Promise<T> {
+  const res = await fetch(`${CONTENT_BASE}/${file}`, { cache: 'no-store' });
+  if (!res.ok) throw new Error(`fetch ${file} failed: ${res.status}`);
+  return res.json() as Promise<T>;
 }
 
 function markdownToHtml(md: string): string {
@@ -33,50 +35,70 @@ function markdownToHtml(md: string): string {
     .join('\n');
 }
 
-export function fetchServices(): Service[] {
-  const dir = path.join(process.cwd(), 'content/services');
-  return readDir<Service & { order: number }>(dir)
-    .sort((a, b) => a.order - b.order)
-    .map(({ order: _order, ...s }) => s);
-}
-
-export function fetchPortfolio(): PortfolioItem[] {
-  return readDir<PortfolioItem>(path.join(process.cwd(), 'content/portfolio'));
-}
-
-export function fetchTestimonials(): Testimonial[] {
-  return readDir<Testimonial>(path.join(process.cwd(), 'content/testimonials'));
-}
-
-export function fetchAbout(): string {
-  const { body } = readJson<{ body: string }>(
-    path.join(process.cwd(), 'content/about.json'),
-  );
-  return markdownToHtml(body);
-}
-
-export function fetchSections(): PageSection[] {
-  const { sections } = readJson<{ sections: PageSection[] }>(
-    path.join(process.cwd(), 'content/sections.json'),
-  );
-  return sections;
-}
-
-export function fetchSiteConfig(): SiteConfig {
-  return readJson<SiteConfig>(path.join(process.cwd(), 'content/site-config.json'));
-}
-
-export function fetchSocialLinks(): SocialLinks {
+export async function fetchServices(): Promise<Service[]> {
   try {
-    return readJson<SocialLinks>(path.join(process.cwd(), 'content/social-links.json'));
+    const { services } = await fetchJson<{ services: Service[] }>('services.json');
+    return services;
+  } catch {
+    return DEFAULT_SERVICES;
+  }
+}
+
+export async function fetchPortfolio(): Promise<PortfolioItem[]> {
+  try {
+    const { portfolio } = await fetchJson<{ portfolio: PortfolioItem[] }>('portfolio.json');
+    return portfolio;
+  } catch {
+    return DEFAULT_PORTFOLIO;
+  }
+}
+
+export async function fetchTestimonials(): Promise<Testimonial[]> {
+  try {
+    const { testimonials } = await fetchJson<{ testimonials: Testimonial[] }>('testimonials.json');
+    return testimonials;
+  } catch {
+    return DEFAULT_TESTIMONIALS;
+  }
+}
+
+export async function fetchAbout(): Promise<string> {
+  try {
+    const { body } = await fetchJson<{ body: string }>('about.json');
+    return markdownToHtml(body);
+  } catch {
+    return '';
+  }
+}
+
+export async function fetchSections(): Promise<PageSection[]> {
+  try {
+    const { sections } = await fetchJson<{ sections: PageSection[] }>('sections.json');
+    return sections;
+  } catch {
+    return DEFAULT_SECTIONS;
+  }
+}
+
+export async function fetchSiteConfig(): Promise<SiteConfig> {
+  try {
+    return await fetchJson<SiteConfig>('site-config.json');
+  } catch {
+    return DEFAULT_SITE_CONFIG;
+  }
+}
+
+export async function fetchSocialLinks(): Promise<SocialLinks> {
+  try {
+    return await fetchJson<SocialLinks>('social-links.json');
   } catch {
     return DEFAULT_SOCIAL_LINKS;
   }
 }
 
-export function fetchSiteImages(): SiteImages {
+export async function fetchSiteImages(): Promise<SiteImages> {
   try {
-    return readJson<SiteImages>(path.join(process.cwd(), 'content/site-images.json'));
+    return await fetchJson<SiteImages>('site-images.json');
   } catch {
     return DEFAULT_SITE_IMAGES;
   }

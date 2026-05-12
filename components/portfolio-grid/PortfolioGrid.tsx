@@ -19,7 +19,7 @@ export function PortfolioGrid({ items }: PortfolioGridProps) {
     <>
       <div className={Style.grid}>
         {visible.map((item) => (
-          <button key={item.id} className={Style.card} onClick={() => setActive(item)}>
+          <button key={item.title} className={Style.card} onClick={() => setActive(item)}>
             <div
               className={Style.imageWrapper}
               style={item.photos[0] ? { backgroundImage: `url(${item.photos[0]})` } : undefined}

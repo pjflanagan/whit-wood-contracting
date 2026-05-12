@@ -1,0 +1,34 @@
+{
+  "portfolio": [
+    {
+      "title": "Entranceway Flooring",
+      "description": "Upgraded entranceway with sustainable hardwood floors.",
+      "type": "",
+      "photos": []
+    },
+    {
+      "title": "Walk-In Closet",
+      "description": "Redid flooring and designed storage solution for a walk-in closet.",
+      "type": "",
+      "photos": []
+    },
+    {
+      "title": "Bathroom Flooring",
+      "description": "Remodeled bathroom to sustainable hardwood flooring.",
+      "type": "",
+      "photos": []
+    },
+    {
+      "title": "Stairwell Wallpaper",
+      "description": "Beautified the stairwell of this home with new wallpaper.",
+      "type": "",
+      "photos": []
+    },
+    {
+      "title": "Wrap-Around Planter",
+      "description": "Transformed the entranceway to this home by adding a wrap-around planter box.",
+      "type": "",
+      "photos": []
+    }
+  ]
+}
