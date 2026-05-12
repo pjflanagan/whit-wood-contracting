@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import type { GetStaticProps } from 'next';
 import { Hero } from '../components/hero';
 import { StickyHeader } from '../components/sticky-header';
@@ -7,7 +7,7 @@ import { PortfolioGrid } from '../components/portfolio-grid';
 import { Testimonials } from '../components/testimonials';
 import { ContactForm } from '../components/contact-form';
 import { Section, FooterSection } from '../components/section';
-import { fetchSiteConfig, fetchSiteImages, fetchSocialLinks, fetchServices, fetchPortfolio, fetchTestimonials, fetchAbout, fetchSections } from '../services/api';
+import { fetchSiteConfig, fetchSocialLinks, fetchTestimonials, fetchAbout, fetchSections } from '../services/api';
 import type { SiteConfig } from '../model/site-config';
 import type { SiteImages } from '../model/site-images';
 import type { SocialLinks } from '../model/social-links';
@@ -15,32 +15,27 @@ import type { Service } from '../model/service';
 import type { PortfolioItem } from '../model/portfolio-item';
 import type { Testimonial } from '../model/testimonial';
 import type { PageSection } from '../model/section';
+import { DEFAULT_SITE_IMAGES } from '../model/site-images';
 import Style from './index.module.scss';
 
 type HomePageProps = {
   siteConfig: SiteConfig;
-  siteImages: SiteImages;
   socialLinks: SocialLinks;
-  services: Service[];
-  portfolio: PortfolioItem[];
   testimonials: Testimonial[];
   sections: PageSection[];
   aboutHtml: string;
 };
 
 export const getStaticProps: GetStaticProps<HomePageProps> = async () => {
-  const [siteConfig, siteImages, socialLinks, services, portfolio, testimonials, sections, aboutHtml] = await Promise.all([
+  const [siteConfig, socialLinks, testimonials, sections, aboutHtml] = await Promise.all([
     fetchSiteConfig(),
-    fetchSiteImages(),
     fetchSocialLinks(),
-    fetchServices(),
-    fetchPortfolio(),
     fetchTestimonials(),
     fetchSections(),
     fetchAbout(),
   ]);
   return {
-    props: { siteConfig, siteImages, socialLinks, services, portfolio, testimonials, sections, aboutHtml },
+    props: { siteConfig, socialLinks, testimonials, sections, aboutHtml },
     revalidate: 1800,
   };
 };
@@ -54,12 +49,22 @@ function ContactInfo({ phone, email }: { phone: string; email: string }) {
   );
 }
 
-function renderSectionContent(id: string, title: string, description: string, props: Omit<HomePageProps, 'siteImages' | 'socialLinks' | 'sections'>) {
-  const { siteConfig, services, portfolio, testimonials, aboutHtml } = props;
+type ContentProps = {
+  siteConfig: SiteConfig;
+  services: Service[];
+  portfolio: PortfolioItem[];
+  testimonials: Testimonial[];
+  aboutHtml: string;
+  servicesLoaded: boolean;
+  portfolioLoaded: boolean;
+};
+
+function renderSectionContent(id: string, title: string, description: string, props: ContentProps) {
+  const { siteConfig, services, portfolio, testimonials, aboutHtml, servicesLoaded, portfolioLoaded } = props;
   const desc = description ? <p>{description}</p> : null;
   switch (id) {
     case 'services':
-      if (!services.length) return null;
+      if (servicesLoaded && !services.length) return null;
       return (
         <Section key={id} id={id}>
           <h2>{title}</h2>
@@ -78,7 +83,7 @@ function renderSectionContent(id: string, title: string, description: string, pr
         </Section>
       );
     case 'portfolio':
-      if (!portfolio.length) return null;
+      if (portfolioLoaded && !portfolio.length) return null;
       return (
         <Section key={id} id={id}>
           <h2>{title}</h2>
@@ -109,9 +114,27 @@ function renderSectionContent(id: string, title: string, description: string, pr
   }
 }
 
-export default function Home({ siteConfig, siteImages, socialLinks, services, portfolio, testimonials, sections, aboutHtml }: HomePageProps) {
+export default function Home({ siteConfig, socialLinks, testimonials, sections, aboutHtml }: HomePageProps) {
   const heroRef = useRef<HTMLElement>(null);
-  const contentProps = { siteConfig, services, portfolio, testimonials, aboutHtml };
+  const [siteImages, setSiteImages] = useState<SiteImages>(DEFAULT_SITE_IMAGES);
+  const [services, setServices] = useState<Service[]>([]);
+  const [portfolio, setPortfolio] = useState<PortfolioItem[]>([]);
+  const [servicesLoaded, setServicesLoaded] = useState(false);
+  const [portfolioLoaded, setPortfolioLoaded] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/site-images').then(r => r.json()).then(setSiteImages);
+    fetch('/api/services')
+      .then(r => r.json())
+      .then(data => { setServices(data); setServicesLoaded(true); })
+      .catch(() => setServicesLoaded(true));
+    fetch('/api/portfolio')
+      .then(r => r.json())
+      .then(data => { setPortfolio(data); setPortfolioLoaded(true); })
+      .catch(() => setPortfolioLoaded(true));
+  }, []);
+
+  const contentProps: ContentProps = { siteConfig, services, portfolio, testimonials, aboutHtml, servicesLoaded, portfolioLoaded };
   return (
     <>
       <StickyHeader businessName={siteConfig.businessName} triggerRef={heroRef} />
@@ -120,7 +143,7 @@ export default function Home({ siteConfig, siteImages, socialLinks, services, po
         businessName={siteConfig.businessName}
         tagline={siteConfig.tagline}
         ctaLabel={siteConfig.ctaLabel}
-        heroImageUrl={siteImages.heroImageUrl}
+        heroImageUrl={siteImages.heroImageUrl ?? undefined}
       />
       <main className={Style.page}>
         <div className={Style.layout}>
