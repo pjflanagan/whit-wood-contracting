@@ -1,378 +1,83 @@
-import { Client, isFullPage } from '@notionhq/client';
-import type { BlockObjectResponse, RichTextItemResponse } from '@notionhq/client/build/src/api-endpoints';
-import { DEFAULT_SERVICES } from '../model/service';
+import fs from 'fs';
+import path from 'path';
 import type { Service } from '../model/service';
-import { DEFAULT_PORTFOLIO } from '../model/portfolio-item';
 import type { PortfolioItem } from '../model/portfolio-item';
-import { DEFAULT_TESTIMONIALS } from '../model/testimonial';
 import type { Testimonial } from '../model/testimonial';
-import { DEFAULT_SITE_CONFIG } from '../model/site-config';
 import type { SiteConfig } from '../model/site-config';
-import { DEFAULT_SITE_IMAGES } from '../model/site-images';
 import type { SiteImages } from '../model/site-images';
-import { DEFAULT_SOCIAL_LINKS } from '../model/social-links';
 import type { SocialLinks } from '../model/social-links';
-import { DEFAULT_SECTIONS } from '../model/section';
 import type { PageSection } from '../model/section';
-import notionConfig from '../notion.config';
-import { readSnapshot, writeSnapshot, downloadImage } from './snapshot';
+import { DEFAULT_SITE_IMAGES } from '../model/site-images';
+import { DEFAULT_SOCIAL_LINKS } from '../model/social-links';
 
-const NOTION_TOKEN = process.env.NOTION_TOKEN;
-const NOTION_SITE_CONFIG_DB = notionConfig.siteConfigDb;
-const NOTION_SOCIAL_LINKS_DB = notionConfig.socialLinksDb;
-const NOTION_SITE_IMAGES_DB = notionConfig.siteImagesDb;
-const NOTION_SERVICES_DB = notionConfig.servicesDb;
-const NOTION_PORTFOLIO_DB = notionConfig.portfolioDb;
-const NOTION_TESTIMONIALS_DB = notionConfig.testimonialsDb;
-const NOTION_SECTIONS_DB = notionConfig.sectionsDb;
-const NOTION_ABOUT_PAGE = notionConfig.aboutPage;
-
-function createClient(): Client | null {
-  if (!NOTION_TOKEN) return null;
-  return new Client({ auth: NOTION_TOKEN });
+function readJson<T>(filePath: string): T {
+  return JSON.parse(fs.readFileSync(filePath, 'utf-8')) as T;
 }
 
-function richTextToPlain(richText: RichTextItemResponse[]): string {
-  return richText.map((t) => t.plain_text).join('');
+function readDir<T>(dir: string): T[] {
+  return fs.readdirSync(dir)
+    .filter((f) => f.endsWith('.json'))
+    .map((f) => readJson<T>(path.join(dir, f)));
 }
 
-function safeTitle(prop: unknown): string | null {
-  try {
-    const text = richTextToPlain((prop as any)?.title ?? []);
-    return text || null;
-  } catch {
-    return null;
-  }
-}
-
-function safeRichText(prop: unknown): string {
-  try {
-    return richTextToPlain((prop as any)?.rich_text ?? []);
-  } catch {
-    return '';
-  }
-}
-
-function safeSelect(prop: unknown): string {
-  try {
-    return (prop as any)?.select?.name ?? '';
-  } catch {
-    return '';
-  }
-}
-
-function safeNumber(prop: unknown, fallback: number): number {
-  try {
-    const n = (prop as any)?.number;
-    return typeof n === 'number' ? n : fallback;
-  } catch {
-    return fallback;
-  }
-}
-
-function safeFiles(prop: unknown): string[] {
-  try {
-    return ((prop as any)?.files ?? []).map((f: any) =>
-      f.type === 'external' ? f.external.url : f.file.url,
-    ).filter(Boolean);
-  } catch {
-    return [];
-  }
-}
-
-function richTextToHtml(richText: RichTextItemResponse[]): string {
-  return richText
-    .map((t) => {
-      let text = t.plain_text
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;');
-      if (t.annotations.bold) text = `<strong>${text}</strong>`;
-      if (t.annotations.italic) text = `<em>${text}</em>`;
-      if (t.href) text = `<a href="${t.href}" target="_blank" rel="noopener noreferrer">${text}</a>`;
-      return text;
+function markdownToHtml(md: string): string {
+  return md
+    .split(/\n\n+/)
+    .filter(Boolean)
+    .map((para) => {
+      const inner = para
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.+?)\*/g, '<em>$1</em>');
+      return `<p>${inner}</p>`;
     })
-    .join('');
+    .join('\n');
 }
 
-export function blocksToHtml(blocks: BlockObjectResponse[]): string {
-  const html: string[] = [];
-  let listType: 'ul' | 'ol' | null = null;
-
-  for (const block of blocks) {
-    const isBulleted = block.type === 'bulleted_list_item';
-    const isNumbered = block.type === 'numbered_list_item';
-    const isListItem = isBulleted || isNumbered;
-    const currentListType: 'ul' | 'ol' | null = isBulleted ? 'ul' : isNumbered ? 'ol' : null;
-
-    if (listType && (!isListItem || currentListType !== listType)) {
-      html.push(`</${listType}>`);
-      listType = null;
-    }
-    if (isListItem && !listType) {
-      listType = currentListType;
-      html.push(`<${listType}>`);
-    }
-
-    switch (block.type) {
-      case 'paragraph': {
-        const text = richTextToHtml(block.paragraph.rich_text);
-        if (text) html.push(`<p>${text}</p>`);
-        break;
-      }
-      case 'heading_1': {
-        html.push(`<h3>${richTextToHtml(block.heading_1.rich_text)}</h3>`);
-        break;
-      }
-      case 'heading_2': {
-        html.push(`<h4>${richTextToHtml(block.heading_2.rich_text)}</h4>`);
-        break;
-      }
-      case 'heading_3': {
-        html.push(`<h5>${richTextToHtml(block.heading_3.rich_text)}</h5>`);
-        break;
-      }
-      case 'bulleted_list_item': {
-        html.push(`<li>${richTextToHtml(block.bulleted_list_item.rich_text)}</li>`);
-        break;
-      }
-      case 'numbered_list_item': {
-        html.push(`<li>${richTextToHtml(block.numbered_list_item.rich_text)}</li>`);
-        break;
-      }
-    }
-  }
-
-  if (listType) html.push(`</${listType}>`);
-  return html.join('\n');
+export function fetchServices(): Service[] {
+  const dir = path.join(process.cwd(), 'content/services');
+  return readDir<Service & { order: number }>(dir)
+    .sort((a, b) => a.order - b.order)
+    .map(({ order: _order, ...s }) => s);
 }
 
-// --- FETCHERS ---
+export function fetchPortfolio(): PortfolioItem[] {
+  return readDir<PortfolioItem>(path.join(process.cwd(), 'content/portfolio'));
+}
 
-async function fetchPageHtml(pageId: string | undefined): Promise<string | null> {
-  const client = createClient();
-  if (!client || !pageId) return null;
+export function fetchTestimonials(): Testimonial[] {
+  return readDir<Testimonial>(path.join(process.cwd(), 'content/testimonials'));
+}
+
+export function fetchAbout(): string {
+  const { body } = readJson<{ body: string }>(
+    path.join(process.cwd(), 'content/about.json'),
+  );
+  return markdownToHtml(body);
+}
+
+export function fetchSections(): PageSection[] {
+  const { sections } = readJson<{ sections: PageSection[] }>(
+    path.join(process.cwd(), 'content/sections.json'),
+  );
+  return sections;
+}
+
+export function fetchSiteConfig(): SiteConfig {
+  return readJson<SiteConfig>(path.join(process.cwd(), 'content/site-config.json'));
+}
+
+export function fetchSocialLinks(): SocialLinks {
   try {
-    const response = await client.blocks.children.list({ block_id: pageId });
-    return blocksToHtml(response.results as BlockObjectResponse[]);
-  } catch (e) {
-    console.error('Notion page fetch error:', e);
-    return null;
+    return readJson<SocialLinks>(path.join(process.cwd(), 'content/social-links.json'));
+  } catch {
+    return DEFAULT_SOCIAL_LINKS;
   }
 }
 
-export async function fetchServices(): Promise<Service[]> {
-  const client = createClient();
-  if (!client || !NOTION_SERVICES_DB) return readSnapshot<Service[]>('services') ?? DEFAULT_SERVICES;
+export function fetchSiteImages(): SiteImages {
   try {
-    const response = await client.databases.query({
-      database_id: NOTION_SERVICES_DB,
-    });
-    const result = response.results.filter(isFullPage).flatMap((page) => {
-      const p = page.properties;
-      const title = safeTitle(p.Title);
-      if (!title) return [];
-      return [{
-        order: safeNumber(p.Order, Infinity),
-        title,
-        description: safeRichText(p.Description),
-        images: safeFiles(p.Images),
-      }];
-    }).sort((a, b) => a.order - b.order).map(({ order: _order, ...s }) => s);
-    writeSnapshot('services', result);
-    return result;
-  } catch (e) {
-    console.error('Notion services fetch error:', e);
-    return readSnapshot<Service[]>('services') ?? DEFAULT_SERVICES;
-  }
-}
-
-export async function fetchPortfolio(): Promise<PortfolioItem[]> {
-  const client = createClient();
-  if (!client || !NOTION_PORTFOLIO_DB) return readSnapshot<PortfolioItem[]>('portfolio') ?? DEFAULT_PORTFOLIO;
-  try {
-    const response = await client.databases.query({
-      database_id: NOTION_PORTFOLIO_DB,
-    });
-    const result = response.results.filter(isFullPage).flatMap((page) => {
-      const p = page.properties;
-      const title = safeTitle(p.Name);
-      if (!title) return [];
-      return [{
-        order: safeNumber(p.Order, Infinity),
-        id: page.id,
-        title,
-        type: safeSelect(p.Type),
-        description: safeRichText(p.Description),
-        photos: safeFiles(p.Photos),
-      }];
-    }).sort((a, b) => a.order - b.order).map(({ order: _order, ...item }) => item);
-    writeSnapshot('portfolio', result);
-    return result;
-  } catch (e) {
-    console.error('Notion portfolio fetch error:', e);
-    return readSnapshot<PortfolioItem[]>('portfolio') ?? DEFAULT_PORTFOLIO;
-  }
-}
-
-export async function fetchTestimonials(): Promise<Testimonial[]> {
-  const client = createClient();
-  if (!client || !NOTION_TESTIMONIALS_DB) return readSnapshot<Testimonial[]>('testimonials') ?? DEFAULT_TESTIMONIALS;
-  try {
-    const response = await client.databases.query({
-      database_id: NOTION_TESTIMONIALS_DB,
-    });
-    const result = response.results.filter(isFullPage).flatMap((page) => {
-      const p = page.properties;
-      const clientName = safeTitle(p['Client Name']);
-      const quote = safeRichText(p.Quote);
-      if (!clientName || !quote) return [];
-      return [{
-        order: safeNumber(p.Order, Infinity),
-        clientName,
-        quote,
-        rating: safeNumber(p.Stars, 5),
-      }];
-    }).sort((a, b) => a.order - b.order).map(({ order: _order, ...t }) => t);
-    writeSnapshot('testimonials', result);
-    return result;
-  } catch (e) {
-    console.error('Notion testimonials fetch error:', e);
-    return readSnapshot<Testimonial[]>('testimonials') ?? DEFAULT_TESTIMONIALS;
-  }
-}
-
-export async function fetchAbout(): Promise<string> {
-  const result = await fetchPageHtml(NOTION_ABOUT_PAGE);
-  if (result !== null) {
-    writeSnapshot('about', result);
-    return result;
-  }
-  return readSnapshot<string>('about') ?? '';
-}
-
-async function fetchImageDb(dbId: string): Promise<Record<string, string>> {
-  const client = createClient();
-  if (!client || !dbId) return {};
-  const response = await client.databases.query({ database_id: dbId });
-  const kv: Record<string, string> = {};
-  for (const page of response.results.filter(isFullPage)) {
-    const p = page.properties;
-    const id = richTextToPlain((p.ID as any)?.title ?? []);
-    const files: any[] = (p.Image as any)?.files ?? [];
-    const url = files[0]
-      ? files[0].type === 'external'
-        ? files[0].external.url
-        : files[0].file.url
-      : '';
-    if (id && url) kv[id] = url;
-  }
-  return kv;
-}
-
-async function fetchKeyValueDb(dbId: string): Promise<Record<string, string>> {
-  const client = createClient();
-  if (!client || !dbId) return {};
-  const response = await client.databases.query({ database_id: dbId });
-  const kv: Record<string, string> = {};
-  for (const page of response.results.filter(isFullPage)) {
-    const p = page.properties;
-    const id = richTextToPlain((p.ID as any)?.title ?? []);
-    const value = richTextToPlain((p.Value as any)?.rich_text ?? []);
-    if (id) kv[id] = value;
-  }
-  return kv;
-}
-
-export async function fetchSocialLinks(): Promise<SocialLinks> {
-  if (!NOTION_SOCIAL_LINKS_DB) return readSnapshot<SocialLinks>('social-links') ?? DEFAULT_SOCIAL_LINKS;
-  try {
-    const kv = await fetchKeyValueDb(NOTION_SOCIAL_LINKS_DB);
-    const result: SocialLinks = {
-      facebookUrl: kv.facebookUrl || null,
-      instagramUrl: kv.instagramUrl || null,
-      houzzUrl: kv.houzzUrl || null,
-      yelpUrl: kv.yelpUrl || null,
-      googleUrl: kv.googleUrl || null,
-    };
-    writeSnapshot('social-links', result);
-    return result;
-  } catch (e) {
-    console.error('Notion social links fetch error:', e);
-    return readSnapshot<SocialLinks>('social-links') ?? DEFAULT_SOCIAL_LINKS;
-  }
-}
-
-export async function fetchSiteImages(): Promise<SiteImages> {
-  if (!NOTION_SITE_IMAGES_DB) return readSnapshot<SiteImages>('site-images-local') ?? DEFAULT_SITE_IMAGES;
-  try {
-    const kv = await fetchImageDb(NOTION_SITE_IMAGES_DB);
-    const result: SiteImages = {
-      logoUrl: kv.logo || null,
-      heroImageUrl: kv['hero-image'] || null,
-      shareCardUrl: kv['share-card'] || null,
-    };
-    const [logoLocal, heroLocal, shareCardLocal] = await Promise.all([
-      result.logoUrl ? downloadImage(result.logoUrl, 'logo') : Promise.resolve(null),
-      result.heroImageUrl ? downloadImage(result.heroImageUrl, 'hero-image') : Promise.resolve(null),
-      result.shareCardUrl ? downloadImage(result.shareCardUrl, 'share-card') : Promise.resolve(null),
-    ]);
-    writeSnapshot('site-images-local', {
-      logoUrl: logoLocal,
-      heroImageUrl: heroLocal,
-      shareCardUrl: shareCardLocal,
-    });
-    return result;
-  } catch (e) {
-    console.error('Notion site images fetch error:', e);
-    return readSnapshot<SiteImages>('site-images-local') ?? DEFAULT_SITE_IMAGES;
-  }
-}
-
-export async function fetchSections(): Promise<PageSection[]> {
-  const client = createClient();
-  if (!client || !NOTION_SECTIONS_DB) return readSnapshot<PageSection[]>('sections') ?? DEFAULT_SECTIONS;
-  try {
-    const response = await client.databases.query({
-      database_id: NOTION_SECTIONS_DB,
-    });
-    const result = response.results.filter(isFullPage).flatMap((page) => {
-      const p = page.properties;
-      const id = safeTitle(p.ID);
-      const title = safeRichText(p.Title);
-      if (!id || !title) return [];
-      return [{
-        order: safeNumber(p.Order, Infinity),
-        id,
-        title,
-        description: safeRichText(p.Description),
-      }];
-    }).sort((a, b) => a.order - b.order).map(({ order: _order, ...s }) => s);
-    writeSnapshot('sections', result);
-    return result;
-  } catch (e) {
-    console.error('Notion sections fetch error:', e);
-    return readSnapshot<PageSection[]>('sections') ?? DEFAULT_SECTIONS;
-  }
-}
-
-export async function fetchSiteConfig(): Promise<SiteConfig> {
-  if (!NOTION_SITE_CONFIG_DB) return readSnapshot<SiteConfig>('site-config') ?? DEFAULT_SITE_CONFIG;
-  try {
-    const kv = await fetchKeyValueDb(NOTION_SITE_CONFIG_DB);
-    const result: SiteConfig = {
-      businessName: kv.businessName || '',
-      tagline: kv.tagline || '',
-      ctaLabel: kv.buttonLabel || '',
-      seoDescription: kv.seoDescription || '',
-      seoKeywords: kv.seoKeywords || '',
-      phone: kv.phone || '',
-      email: kv.email || '',
-    };
-    writeSnapshot('site-config', result);
-    return result;
-  } catch (e) {
-    console.error('Notion site config fetch error:', e);
-    return readSnapshot<SiteConfig>('site-config') ?? DEFAULT_SITE_CONFIG;
+    return readJson<SiteImages>(path.join(process.cwd(), 'content/site-images.json'));
+  } catch {
+    return DEFAULT_SITE_IMAGES;
   }
 }

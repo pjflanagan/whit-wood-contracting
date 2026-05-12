@@ -3,9 +3,9 @@
 - [ ] Replace /public/img/logo/logo.png with the client's real logo
 - [ ] Replace favicon.png and favicon.ico with client-branded versions
 - [ ] Set the real Google Analytics ID in pages/_app.tsx (replace G-XXXXXXXXXX)
-- [ ] Connect Notion databases — follow notion-setup.md, add env vars in Netlify
-- [ ] Populate the Site Config database in Notion (business name, tagline, hero image URL, CTA, SEO)
-- [ ] Populate Notion with real services, portfolio projects, testimonials, about text, and contact info
+- [x] Connect Notion databases — follow notion-setup.md, add env vars in Netlify
+- [x] Populate the Site Config database in Notion (business name, tagline, hero image URL, CTA, SEO)
+- [x] Populate Notion with real services, portfolio projects, testimonials, about text, and contact info
 - [x] Add social links to SocialIconRow (Facebook, Instagram, Houzz, Yelp, Google)
 
 ## Nice to have
