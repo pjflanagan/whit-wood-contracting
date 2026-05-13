@@ -1,3 +1,5 @@
+import socialLinksJson from '../content/social-links.json';
+
 export type SocialLinks = {
   facebookUrl: string | null;
   instagramUrl: string | null;
@@ -6,10 +8,4 @@ export type SocialLinks = {
   googleUrl: string | null;
 };
 
-export const DEFAULT_SOCIAL_LINKS: SocialLinks = {
-  facebookUrl: null,
-  instagramUrl: null,
-  houzzUrl: null,
-  yelpUrl: null,
-  googleUrl: null,
-};
+export const LOCAL_SOCIAL_LINKS: SocialLinks = socialLinksJson;

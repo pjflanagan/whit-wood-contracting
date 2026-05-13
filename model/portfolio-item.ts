@@ -1,3 +1,5 @@
+import portfolioJson from '../content/portfolio.json';
+
 export type PortfolioItem = {
   title: string;
   type: string;
@@ -5,4 +7,4 @@ export type PortfolioItem = {
   photos: string[];
 };
 
-export const DEFAULT_PORTFOLIO: PortfolioItem[] = [];
+export const LOCAL_PORTFOLIO: PortfolioItem[] = portfolioJson.portfolio;

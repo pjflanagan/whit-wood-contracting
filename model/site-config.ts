@@ -1,3 +1,5 @@
+import siteConfigJson from '../content/site-config.json';
+
 export type SiteConfig = {
   businessName: string;
   tagline: string;
@@ -8,12 +10,4 @@ export type SiteConfig = {
   email: string;
 };
 
-export const DEFAULT_SITE_CONFIG: SiteConfig = {
-  businessName: '',
-  tagline: '',
-  ctaLabel: '',
-  seoDescription: '',
-  seoKeywords: '',
-  phone: '',
-  email: '',
-};
+export const LOCAL_SITE_CONFIG: SiteConfig = siteConfigJson;
