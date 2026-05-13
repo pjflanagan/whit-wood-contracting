@@ -2,15 +2,13 @@
 
 Original: https://www.yourgreenguys.org/
 
-Contractor website for Ridge & Rail Renovations (Portland, OR). Built with Next.js 14, TypeScript, and SCSS. Deployed on Netlify. Content is managed through Notion — no code changes needed for day-to-day updates.
+Contractor website for Whit Wood. Built with Next.js 14, TypeScript, and SCSS. Deployed on Netlify. Content is managed through Decap — no code changes needed for day-to-day updates.
 
 ## Content Management
 
-All copy, services, portfolio items, and testimonials are managed in Notion. See **[notion-setup.md](./notion-setup.md)** for how to structure the databases and connect them to the site.
+Content is managed through Decap. The account login is configured through Netlify.
 
-When Notion is not configured (no `NOTION_TOKEN`), the site displays built-in example data so it is always previewable.
-
-The site rebuilds automatically every hour to pick up Notion changes. To force an immediate refresh, trigger a new deploy in Netlify.
+Content updates do not trigger a redeploy, as Decap is designed to do. Instead they are stored directly in this repo publicly on Github.
 
 ## Local Development
 
@@ -18,11 +16,6 @@ The site rebuilds automatically every hour to pick up Notion changes. To force a
 git clone https://github.com/pjflanagan/whit-wood-contracting
 cd whit-wood-contracting
 npm install
-```
-
-Create a `.env.local` file with Notion credentials (see notion-setup.md). Without it, the site runs fine on example data.
-
-```
 npm run dev
 ```
 
@@ -34,15 +27,15 @@ Pushing to `main` triggers a Netlify deploy automatically.
 
 ## Tech Stack
 
-| Layer | Tool |
-|---|---|
+| Layer     | Tool                      |
+| --------- | ------------------------- |
 | Framework | Next.js 14 (Pages Router) |
-| Language | TypeScript |
-| Styles | SCSS Modules |
-| CMS | Notion (via `@notionhq/client`) |
-| Hosting | Netlify |
-| Forms | Netlify Forms |
-| Analytics | Google Analytics 4 |
+| Language  | TypeScript                |
+| Styles    | SCSS Modules              |
+| CMS       | Decap                     |
+| Hosting   | Netlify                   |
+| Forms     | Netlify Forms             |
+| Analytics | Google Analytics 4        |
 
 ## Project Structure
 
